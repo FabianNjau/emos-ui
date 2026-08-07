@@ -83,6 +83,7 @@ export interface ChatMessage {
 }
 
 export interface ChatSource {
+  concept_slug?: string;
   name: string;
   finding: string;
   url?: string;
@@ -132,6 +133,7 @@ export interface ChatMessageRecord {
   session_id: string;
   role: 'user' | 'assistant';
   content: string;
+  thinking: string | null;
   sources: ChatSource[] | null;
   quality_score: number | null;
   created_at: string;

@@ -31,6 +31,7 @@ import SignupPage from './pages/public/auth/SignupPage';
 import DashboardOverview from './pages/dashboard/DashboardOverview';
 import SessionsPage from './pages/dashboard/SessionsPage';
 import SavedPage from './pages/dashboard/SavedPage';
+import SessionChatPage from './pages/dashboard/SessionChatPage';
 import ProfilePage from './pages/dashboard/ProfilePage';
 
 const queryClient = new QueryClient({
@@ -67,6 +68,7 @@ export default function App() {
             <Route path={DASHBOARD_ROUTES.HOME} element={<DashboardOverview />} />
             <Route path={DASHBOARD_ROUTES.CHATS} element={<SessionsPage />} />
             <Route path={DASHBOARD_ROUTES.SAVED} element={<SavedPage />} />
+            <Route path={DASHBOARD_ROUTES.CHATS + '/:sessionId'} element={<SessionChatPage />} />
             <Route path={DASHBOARD_ROUTES.PROFILES} element={<ProfilePage />} />
           </Route>
 
