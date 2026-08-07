@@ -57,7 +57,6 @@ export default function App() {
             <Route path={PUBLIC_ROUTES.TOPICS} element={<TopicBrowser />} />
             <Route path={PUBLIC_ROUTES.TOPIC_PAGE} element={<TopicPage />} />
             <Route path={PUBLIC_ROUTES.CONCEPT} element={<ConceptDetail />} />
-            <Route path={PUBLIC_ROUTES.ASK} element={<AskPage />} />
             <Route path={PUBLIC_ROUTES.ABOUT} element={<AboutPage />} />
             <Route path={PUBLIC_ROUTES.CALLBACK} element={<AuthCallback />} />
             <Route path={PUBLIC_ROUTES.LOGIN} element={<LoginPage />} />
@@ -72,6 +71,7 @@ export default function App() {
             <Route path={DASHBOARD_ROUTES.EXPLORE} element={<ExplorePage />} />
             <Route path={DASHBOARD_ROUTES.CHATS + '/:sessionId'} element={<SessionChatPage />} />
             <Route path={DASHBOARD_ROUTES.PROFILES} element={<ProfilePage />} />
+            <Route path={PUBLIC_ROUTES.ASK} element={<AskPage />} />
           </Route>
 
           {/* ── Admin routes — AppShell ───────────────────────────────────── */}

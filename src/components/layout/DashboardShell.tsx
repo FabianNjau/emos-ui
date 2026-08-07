@@ -148,14 +148,22 @@ export default function DashboardShell() {
       </aside>
 
       {/* Main content */}
-      <div style={{
+      <main style={{
         marginLeft: 240,
         flex: 1,
         minHeight: '100vh',
         background: 'var(--bg)',
+        overflowX: 'hidden',
       }}>
-        <Outlet />
-      </div>
+        {/* Inner content wrapper — fills space with comfortable max-width */}
+        <div style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '2.5rem 2rem',
+        }}>
+          <Outlet />
+        </div>
+      </main>
 
       <style>{`
         @keyframes spin {

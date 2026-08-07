@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
-import { PUBLIC_ROUTES } from '../../../constants/routes';
+import { PUBLIC_ROUTES, DASHBOARD_ROUTES } from '../../../constants/routes';
 import './AuthPage.css';
 
 export default function LoginPage() {
@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate(PUBLIC_ROUTES.HOME);
+      navigate(DASHBOARD_ROUTES.HOME, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed.');
     } finally {
