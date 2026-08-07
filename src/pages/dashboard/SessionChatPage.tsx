@@ -1,197 +1,242 @@
 /**
- * SessionChatPage — view + continue a specific chat session.
+ * SessionChatPage — EMOS chat interface.
  * Route: /dashboard/chats/:sessionId
+ * Spec: emoschatdirection.png — user right / AI left, 16px radii, mint bubbles
  */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSessionChat, useAppendMessage } from '../../hooks/useSessionChat';
 import { useChatSessions } from '../../hooks/useChatSessions';
 import { useAuth } from '../../hooks/useAuth';
-import { PUBLIC_ROUTES, DASHBOARD_ROUTES } from '../../constants/routes';
+import { DASHBOARD_ROUTES } from '../../constants/routes';
 import { supabase } from '../../lib/supabase';
 import type { ChatMessage } from '../../types/api';
 import {
-  ArrowLeft,
-  Loader,
-  Bookmark,
-  BookmarkCheck,
-  ChevronDown,
-  ChevronUp,
-  Send,
-  BarChart2,
-  Clock,
-  Tag,
+  ArrowLeft, Loader, Bookmark, BookmarkCheck, Send,
+  Copy, Check, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp,
+  MessageSquare, Clock, Tag, Share2, MoreHorizontal,
+  Lightbulb, BarChart2, Compass, BookOpen,
 } from 'lucide-react';
+import './SessionChatPage.css';
 
-function MessageView({ msg }: { msg: ChatMessage }) {
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function timeLabel(iso: string): string {
+  return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function dateLabel(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ── Suggestion chips data ──────────────────────────────────────────────────
+
+const SUGGESTION_CHIPS = [
+  { icon: <Lightbulb size={13} />, label: 'Give me an example' },
+  { icon: <BarChart2 size={13} />, label: 'How does this compare?' },
+  { icon: <Compass size={13} />, label: 'Add more frameworks' },
+];
+
+// ── Quick toolbar ──────────────────────────────────────────────────────────
+
+const TOOLBAR_ITEMS = [
+  { icon: <BookOpen size={14} />, label: 'Research' },
+  { icon: <BarChart2 size={14} />, label: 'Summarize' },
+  { icon: <Compass size={14} />, label: 'Explore' },
+  { icon: <BookOpen size={14} />, label: 'Create' },
+];
+
+// ── MessageView ─────────────────────────────────────────────────────────────
+
+interface MessageViewProps {
+  msg: ChatMessage;
+  onChip?: (text: string) => void;
+}
+
+function MessageView({ msg, onChip }: MessageViewProps) {
+  const [showSources, setShowSources] = useState(false);
   const [showThinking, setShowThinking] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const handleBookmarkConcept = async (conceptSlug: string, conceptName: string) => {
+  const isUser = msg.role === 'user';
+  const bubbleClass = isUser ? 'chat-msg--user' : 'chat-msg--ai';
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(msg.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  const handleBookmark = async () => {
+    if (bookmarked) return;
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user || !msg.sources?.length) return;
+    const slug = msg.sources[0].concept_slug;
+    const name = msg.sources[0].name;
+    if (!slug) return;
     await supabase.from('bookmarks').upsert({
-      user_id: user.id,
-      concept_id: conceptSlug,
-      concept_slug: conceptSlug,
-      concept_name: conceptName,
-      domain: null,
-      layer: null,
+      user_id: user.id, concept_id: slug,
+      concept_slug: slug, concept_name: name,
+      domain: null, layer: null,
     }, { onConflict: 'user_id,concept_id' });
     setBookmarked(true);
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 6,
-      padding: '0.75rem 0',
-    }}>
-      {/* Role label */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        fontSize: 12,
-        fontWeight: 600,
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        color: msg.role === 'user' ? '#5b6abf' : 'var(--accent)',
-      }}>
-        <div style={{
-          width: 28,
-          height: 28,
-          borderRadius: '50%',
-          background: msg.role === 'user' ? 'rgba(91,106,191,0.12)' : 'rgba(193,125,60,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 11,
-          color: msg.role === 'user' ? '#5b6abf' : 'var(--accent)',
-        }}>
-          {msg.role === 'user' ? 'Y' : 'E'}
-        </div>
-        {msg.role === 'user' ? 'You' : 'EMOS'}
-      </div>
+    <div className={`chat-msg ${bubbleClass}`}>
 
-      {/* Content */}
-      <div style={{
-        paddingLeft: 36,
-        fontSize: 15,
-        lineHeight: 1.65,
-        color: 'var(--text-primary)',
-      }}>
-        {msg.content.split('\n').map((para, i) => (
-          <p key={i} style={{ marginBottom: i < msg.content.split('\n').length - 1 ? '0.75em' : 0 }}>
-            {para}
-          </p>
-        ))}
-      </div>
-
-      {/* Thinking toggle */}
-      {msg.thinking && (
-        <div style={{ paddingLeft: 36, marginTop: 4 }}>
-          <button
-            onClick={() => setShowThinking(s => !s)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              fontSize: 12,
-              color: 'var(--text-tertiary)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.2rem 0',
-              fontFamily: 'var(--font-sans)',
-            }}
-          >
-            {showThinking ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-            {showThinking ? 'Hide reasoning' : 'Show reasoning'}
-          </button>
-          {showThinking && (
-            <div style={{
-              marginTop: 8,
-              padding: '0.75rem 1rem',
-              background: 'var(--surface-2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              fontSize: 13,
-              lineHeight: 1.6,
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-sans)',
-              whiteSpace: 'pre-wrap',
-            }}>
-              {msg.thinking}
-            </div>
+      {/* Avatar + sender + time */}
+      <div className="chat-msg__header">
+        <div className="chat-msg__avatar" aria-hidden="true">
+          {isUser ? 'Y' : (
+            <svg width="14" height="14" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M20 6 C13 6 7 11 7 16 C7 21 13 24 20 20 C27 16 33 19 33 24 C33 29 27 34 20 34" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
+              <path d="M20 6 C27 6 33 11 33 16 C33 21 27 24 20 20 C13 16 7 19 7 24 C7 29 13 34 20 34" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
           )}
+        </div>
+        <span className="chat-msg__sender">{isUser ? 'You' : 'EMOS AI'}</span>
+        <span className="chat-msg__time">{timeLabel(msg.created_at ?? new Date().toISOString())}</span>
+      </div>
+
+      {/* Bubble */}
+      <div className="chat-msg__bubble">
+        <div className="chat-msg__content">
+          {msg.content.split('\n').map((para, i, arr) => (
+            <p key={i}>{para}{i < arr.length - 1 ? '' : ''}</p>
+          ))}
+        </div>
+
+        {/* Sources toggle — AI only */}
+        {!isUser && msg.sources && msg.sources.length > 0 && (
+          <>
+            <button
+              className="chat-msg__sources-toggle"
+              onClick={() => setShowSources(v => !v)}
+              aria-expanded={showSources}
+            >
+              <Tag size={11} aria-hidden="true" />
+              Sources ({msg.sources.length})
+              {showSources ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+            </button>
+
+            {showSources && (
+              <div className="chat-msg__sources">
+                {msg.sources.map((s, i) => (
+                  <div key={i} className="chat-msg__source-item">
+                    <span className="chat-msg__source-name">{s.name}</span>
+                    {s.finding && (
+                      <span className="chat-msg__source-finding">— {s.finding}</span>
+                    )}
+                    {s.concept_slug && (
+                      <>
+                        <Link
+                          to={`/concepts/${s.concept_slug}`}
+                          className="chat-msg__source-link"
+                        >
+                          View →
+                        </Link>
+                        <button
+                          className="chat-msg__action-btn"
+                          onClick={handleBookmark}
+                          title="Save concept"
+                          style={{ opacity: bookmarked ? 1 : 0 }}
+                          aria-label="Save concept"
+                        >
+                          {bookmarked ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Suggestion chips — AI only, last message */}
+        {!isUser && onChip && (
+          <div className="session-chat__chips" style={{ marginTop: '1rem' }}>
+            {SUGGESTION_CHIPS.map((chip, i) => (
+              <button
+                key={i}
+                className="session-chat__chip"
+                onClick={() => onChip(chip.label)}
+              >
+                {chip.icon}
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Footer actions — AI only */}
+      {!isUser && (
+        <div className="chat-msg__footer">
+          <button className="chat-msg__action-btn" onClick={handleCopy} title="Copy response" aria-label="Copy">
+            {copied ? <Check size={13} /> : <Copy size={13} />}
+          </button>
+          <button className="chat-msg__action-btn" title="Good response" aria-label="Like">
+            <ThumbsUp size={13} />
+          </button>
+          <button className="chat-msg__action-btn" title="Poor response" aria-label="Dislike">
+            <ThumbsDown size={13} />
+          </button>
         </div>
       )}
 
-      {/* Sources */}
-      {msg.sources && msg.sources.length > 0 && (
-        <div style={{ paddingLeft: 36, marginTop: 6 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
-            Sources
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {msg.sources.map((s, i) => (
-              <div key={i} style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.4rem 0.75rem',
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: 6,
-                fontSize: 13,
-                gap: 8,
-              }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</span>
-                  {s.finding && <span style={{ color: 'var(--text-secondary)', marginLeft: 6 }}>— {s.finding}</span>}
-                </div>
-                {s.concept_slug && (
-                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                    <Link
-                      to={`/concepts/${s.concept_slug}`}
-                      style={{ fontSize: 12, color: 'var(--accent)', textDecoration: 'none', whiteSpace: 'nowrap' }}
-                    >
-                      View concept →
-                    </Link>
-                    <button
-                      onClick={() => handleBookmarkConcept(s.concept_slug!, s.name)}
-                      title="Save concept"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: bookmarked ? 'var(--accent)' : 'var(--text-tertiary)',
-                        padding: 2,
-                      }}
-                    >
-                      {bookmarked ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Thinking toggle — AI only */}
+      {!isUser && msg.thinking && (
+        <>
+          <button
+            className="chat-msg__thinking-toggle"
+            onClick={() => setShowThinking(v => !v)}
+            aria-expanded={showThinking}
+            style={{ marginLeft: 40 }}
+          >
+            {showThinking ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+            {showThinking ? 'Hide reasoning' : 'Show reasoning'}
+          </button>
+          {showThinking && (
+            <div className="chat-msg__thinking" role="region" aria-label="AI reasoning">
+              {msg.thinking}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 }
 
+// ── Loading indicator ─────────────────────────────────────────────────────
+
+function LoadingIndicator() {
+  return (
+    <div className="chat-msg chat-msg--ai chat-msg--loading">
+      <div className="chat-msg__avatar" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 40 40" fill="none">
+          <path d="M20 6 C13 6 7 11 7 16 C7 21 13 24 20 20 C27 16 33 19 33 24 C33 29 27 34 20 34" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M20 6 C27 6 33 11 33 16 C33 21 27 24 20 20 C13 16 7 19 7 24 C7 29 13 34 20 34" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div className="chat-msg__bubble">
+        <div className="loading-dots" aria-label="EMOS is thinking">
+          <span /><span /><span />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── SessionChatPage ─────────────────────────────────────────────────────────
+
 export default function SessionChatPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { data: sessions = [] } = useChatSessions();
 
+  const { data: sessions = [] } = useChatSessions();
   const session = sessions.find(s => s.id === sessionId);
 
   const { data: messages = [], isLoading } = useSessionChat(sessionId ?? '');
@@ -200,20 +245,25 @@ export default function SessionChatPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sessionTitleSet, setSessionTitleSet] = useState(!!session?.title);
+  const [sessionTitleSet] = useState(!!session?.title);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Scroll to bottom on new messages
+  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, loading]);
 
-  // If no sessionId, redirect
+  // Redirect if no session
   useEffect(() => {
     if (!sessionId) navigate(DASHBOARD_ROUTES.CHATS, { replace: true });
   }, [sessionId, navigate]);
+
+  const handleChip = useCallback((text: string) => {
+    setInput(text);
+    inputRef.current?.focus();
+  }, []);
 
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -223,10 +273,9 @@ export default function SessionChatPage() {
     // Set session title from first user message
     if (!sessionTitleSet) {
       void supabase.from('chat_sessions').update({ title: text.slice(0, 80) }).eq('id', sessionId);
-      setSessionTitleSet(true);
     }
 
-    const userMsg: ChatMessage = { role: 'user', content: text };
+    const userMsg: ChatMessage = { role: 'user', content: text, created_at: new Date().toISOString() };
     setInput('');
     setLoading(true);
     setError(null);
@@ -249,12 +298,12 @@ export default function SessionChatPage() {
         content: data.response ?? '',
         thinking: data.thinking,
         sources: data.sources,
+        created_at: new Date().toISOString(),
       };
 
-      // Persist assistant message
       await appendMessage.mutateAsync({ sessionId, message: assistantMsg });
 
-      // Update session discussed concepts if sources present
+      // Update session discussed concepts
       if (data.sources?.length > 0) {
         const newSlugs = data.sources
           .map((s: { concept_slug?: string }) => s.concept_slug)
@@ -267,7 +316,6 @@ export default function SessionChatPage() {
         }
       }
 
-      // Update session updated_at
       void supabase.from('chat_sessions').update({ updated_at: new Date().toISOString() }).eq('id', sessionId);
 
     } catch (err) {
@@ -278,187 +326,166 @@ export default function SessionChatPage() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      void handleSend();
+    }
+  };
+
   if (!sessionId) return null;
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <Loader size={24} className="spin" />
+      <div className="session-chat">
+        <div className="session-chat__topbar">
+          <Link to={DASHBOARD_ROUTES.CHATS} className="session-chat__topbar-back">
+            <ArrowLeft size={16} />
+          </Link>
+          <div className="session-chat__topbar-info">
+            <div className="session-chat__topbar-title">Loading…</div>
+          </div>
+        </div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Loader size={22} style={{ color: 'var(--emos-green-500)', animation: 'spin 1s linear infinite' }} />
+        </div>
       </div>
     );
   }
 
+  const isActive = (messages.filter(m => m.role === 'user').length ?? 0) > 0
+    ? 'Active'
+    : 'New';
+  const messageCount = messages.filter(m => m.role === 'user').length ?? 0;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {/* Top bar */}
-      <div style={{
-        padding: '1rem 1.5rem',
-        borderBottom: '1px solid var(--border)',
-        background: 'var(--surface)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 12,
-      }}>
-        <Link
-          to={DASHBOARD_ROUTES.CHATS}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 34,
-            height: 34,
-            borderRadius: 8,
-            background: 'var(--surface-2)',
-            border: '1px solid var(--border)',
-            color: 'var(--text-secondary)',
-            textDecoration: 'none',
-            flexShrink: 0,
-          }}
-        >
+    <div className="session-chat">
+
+      {/* Topbar */}
+      <div className="session-chat__topbar">
+        <Link to={DASHBOARD_ROUTES.CHATS} className="session-chat__topbar-back" aria-label="Back to sessions">
           <ArrowLeft size={16} />
         </Link>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {session?.title ?? 'Chat session'}
+
+        <div className="session-chat__topbar-info">
+          <div className="session-chat__topbar-title">
+            {session?.title ?? 'New conversation'}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 2 }}>
-            <span style={{ fontSize: 12, color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Clock size={11} />
-              {session ? new Date(session.updated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+          <div className="session-chat__topbar-meta">
+            <span className="session-chat__topbar-date">
+              <Clock size={11} aria-hidden="true" />
+              {session?.created_at ? dateLabel(session.created_at) : 'Just now'}
+              {session?.created_at && session.updated_at !== session.created_at && (
+                <> · {new Date(session.updated_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</>
+              )}
             </span>
-            {session?.discussed_concepts && session.discussed_concepts.length > 0 && (
-              <span style={{ fontSize: 11, color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Tag size={11} />
-                {session.discussed_concepts.length} concepts
+            {messageCount > 0 && (
+              <span className="session-chat__topbar-badge session-chat__topbar-badge--active">
+                {isActive}
               </span>
             )}
           </div>
         </div>
-        <div style={{ fontSize: 12, color: 'var(--text-tertiary)', flexShrink: 0 }}>
-          {messages.length} messages
+
+        <div className="session-chat__topbar-actions">
+          {messageCount > 0 && (
+            <span style={{ fontSize: '0.75rem', color: 'var(--emos-text-muted)', fontFamily: 'var(--font-sans)' }}>
+              {messageCount} message{messageCount !== 1 ? 's' : ''}
+            </span>
+          )}
+          <button className="session-chat__topbar-icon-btn" aria-label="Share session">
+            <Share2 size={16} strokeWidth={1.75} />
+          </button>
+          <button className="session-chat__topbar-icon-btn" aria-label="Session options">
+            <MoreHorizontal size={16} strokeWidth={1.75} />
+          </button>
         </div>
       </div>
 
       {/* Messages */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '1.5rem 2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 0,
-      }}>
+      <div className="session-chat__messages" role="log" aria-live="polite" aria-label="Chat messages">
+
         {messages.length === 0 && !loading && (
-          <div style={{
-            textAlign: 'center',
-            color: 'var(--text-tertiary)',
-            fontSize: 14,
-            padding: '3rem 1rem',
-          }}>
-            No messages yet. Start the conversation below.
+          <div className="session-chat__empty">
+            <div className="session-chat__empty-icon" aria-hidden="true">
+              <MessageSquare size={28} strokeWidth={1.5} />
+            </div>
+            <p className="session-chat__empty-title">Start the conversation</p>
+            <p className="session-chat__empty-body">
+              Ask about any concept, topic, or idea. EMOS will search the knowledge base and provide sourced answers.
+            </p>
           </div>
         )}
 
         {messages.map((msg, i) => (
-          <MessageView key={(msg as { id?: string }).id ?? i} msg={msg} />
+          <MessageView
+            key={(msg as { id?: string }).id ?? i}
+            msg={msg}
+            onChip={i === messages.length - 1 && msg.role === 'assistant' ? handleChip : undefined}
+          />
         ))}
 
-        {loading && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0.75rem 0', color: 'var(--text-tertiary)', fontSize: 14 }}>
-            <Loader size={16} className="spin" />
-            EMOS is thinking…
-          </div>
-        )}
+        {loading && <LoadingIndicator />}
 
         {error && (
-          <div style={{
-            padding: '0.75rem 1rem',
-            background: 'rgba(220,38,38,0.08)',
-            border: '1px solid rgba(220,38,38,0.2)',
-            borderRadius: 8,
-            color: 'var(--red)',
-            fontSize: 14,
-          }}>
-            {error}
-          </div>
+          <div className="chat-error" role="alert">{error}</div>
         )}
 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div style={{
-        padding: '1rem 1.5rem 1.5rem',
-        borderTop: '1px solid var(--border)',
-        background: 'var(--surface)',
-      }}>
-        <form
-          onSubmit={handleSend}
-          style={{
-            display: 'flex',
-            gap: 10,
-            alignItems: 'flex-end',
-            maxWidth: 800,
-          }}
-        >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Continue the conversation…"
-            rows={2}
-            style={{
-              flex: 1,
-              padding: '0.75rem 1rem',
-              border: '1px solid var(--border)',
-              borderRadius: 10,
-              fontSize: 15,
-              color: 'var(--text-primary)',
-              background: 'var(--bg)',
-              fontFamily: 'var(--font-sans)',
-              resize: 'none',
-              outline: 'none',
-            }}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                void handleSend();
-              }
-            }}
-          />
+      {/* Input area */}
+      <div className="session-chat__input-area">
+        {/* Quick toolbar */}
+        {messages.length === 0 && (
+          <div className="session-chat__toolbar" role="toolbar" aria-label="Quick actions">
+            {TOOLBAR_ITEMS.map((item, i) => (
+              <button
+                key={i}
+                className="session-chat__toolbar-btn"
+                onClick={() => { setInput(item.label); inputRef.current?.focus(); }}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Input form */}
+        <form className="session-chat__input-form" onSubmit={handleSend}>
+          <div className="session-chat__textarea-wrap">
+            <textarea
+              ref={inputRef}
+              className="session-chat__textarea"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Message EMOS…"
+              rows={2}
+              aria-label="Message input"
+            />
+          </div>
           <button
             type="submit"
+            className="session-chat__send-btn"
             disabled={!input.trim() || loading}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 44,
-              height: 44,
-              borderRadius: 10,
-              background: input.trim() && !loading ? 'var(--accent)' : 'var(--surface-2)',
-              border: 'none',
-              cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
-              color: input.trim() && !loading ? '#fff' : 'var(--text-tertiary)',
-              flexShrink: 0,
-              transition: 'all 0.15s ease',
-            }}
+            aria-label="Send message"
           >
-            <Send size={18} />
+            <Send size={18} strokeWidth={2} />
           </button>
         </form>
-        <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 6, maxWidth: 800 }}>
-          Press Enter to send · Shift+Enter for new line
+
+        <div style={{
+          fontFamily: 'var(--font-sans)',
+          fontSize: '0.6875rem',
+          color: 'var(--emos-text-muted)',
+          marginTop: '0.5rem',
+          paddingLeft: '0.25rem',
+        }}>
+          Press <kbd style={{ fontFamily: 'inherit' }}>Enter</kbd> to send · <kbd style={{ fontFamily: 'inherit' }}>Shift+Enter</kbd> for new line
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .spin { animation: spin 1s linear infinite; }
-      `}</style>
     </div>
   );
 }

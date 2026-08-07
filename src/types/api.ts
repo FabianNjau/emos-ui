@@ -80,6 +80,7 @@ export interface ChatMessage {
   content: string;
   thinking?: string;
   sources?: ChatSource[];
+  created_at?: string;
 }
 
 export interface ChatSource {
