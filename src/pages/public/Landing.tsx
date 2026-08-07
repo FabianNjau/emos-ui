@@ -43,18 +43,49 @@ export default function Landing() {
 
           {/* Left: content + search */}
           <div className="landing__hero-content">
-            <span className="landing__eyebrow">Evidence-based marketing</span>
+
+            {/* Brand mark */}
+            <div className="landing__brand-mark">
+              <img
+                src="/assets/emos-logo-square.png"
+                alt=""
+                className="landing__brand-logo"
+                width={36}
+                height={36}
+              />
+              <span className="landing__brand-name">EMOS</span>
+            </div>
+
+            <span className="landing__eyebrow">Evidence-based marketing intelligence</span>
             <h1 className="landing__headline">
-              Marketing decisions<br />
-              <span className="landing__headline-accent">backed by research.</span>
+              Turn questions into<br />
+              <span className="landing__headline-accent">knowledge advantage.</span>
             </h1>
             <p className="landing__sub">
-              EMOS searches across academic papers, textbooks, and industry reports
+              EMOS searches across academic papers, textbooks, and industry research
               to answer your marketing questions — with citations, not opinions.
             </p>
 
+            {/* CTAs */}
+            <div className="landing__hero-actions">
+              <button
+                className="landing__btn--primary"
+                onClick={() => navigate('/auth/signup')}
+              >
+                Get started free
+                <ArrowRight size={15} />
+              </button>
+              <button
+                className="landing__btn--ghost"
+                onClick={() => navigate(PUBLIC_ROUTES.ABOUT)}
+              >
+                How it works
+              </button>
+            </div>
+
             {/* Search */}
             <form className="landing__search-form" onSubmit={handleSearch}>
+              <Search size={16} className="landing__search-icon" />
               <input
                 className="landing__search-input"
                 type="search"
@@ -75,6 +106,7 @@ export default function Landing() {
                   <div className="landing__step-icon">{step.icon}</div>
                   <div>
                     <span className="landing__step-label">{step.label}</span>
+                    <span className="landing__step-sub">{step.sub}</span>
                   </div>
                 </div>
               ))}
@@ -83,7 +115,10 @@ export default function Landing() {
 
           {/* Right: editorial pull quote */}
           <div className="landing__hero-aside">
-            <p className="landing__quote-label">Featured insight</p>
+            <div className="landing__aside-badge">
+              <span className="landing__aside-badge-dot" />
+              Featured insight
+            </div>
             <blockquote className="landing__quote-text">
               &ldquo;{PULL_QUOTE.text}&rdquo;
             </blockquote>
