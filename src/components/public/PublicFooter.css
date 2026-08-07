@@ -69,6 +69,17 @@
   color: var(--text-primary, #111827);
 }
 
+@media (max-width: 640px) {
+  .public-footer__inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .public-footer__links {
+    gap: 2rem;
+  }
+}
+
 .public-footer__bottom {
   max-width: 1200px;
   margin: 0 auto;
