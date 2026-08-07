@@ -13,23 +13,20 @@ export default function PublicHeader() {
   return (
     <header className="public-header">
       <div className="public-header__inner">
+
         {/* Logo */}
         <Link to={PUBLIC_ROUTES.HOME} className="public-header__logo" aria-label="EMOS — Home">
           <img
             src="/assets/emos-logo-square.png"
             alt=""
-            width={32}
-            height={32}
-            style={{ objectFit: 'contain', borderRadius: '6px' }}
+            width={28}
+            height={28}
           />
-          <span>EMOS</span>
+          <span className="public-header__logo-text">EMOS</span>
         </Link>
 
-        {/* Nav — public links only, no auth-gated routes */}
+        {/* Nav — centered, About only */}
         <nav className="public-header__nav" aria-label="Main navigation">
-          <Link to={PUBLIC_ROUTES.TOPICS} className="public-header__nav-link">
-            Topics
-          </Link>
           <Link to={PUBLIC_ROUTES.ABOUT} className="public-header__nav-link">
             About
           </Link>
@@ -39,14 +36,12 @@ export default function PublicHeader() {
         <div className="public-header__auth">
           {!loading && (
             user ? (
-              <>
-                <button
-                  className="public-header__btn public-header__btn--ghost"
-                  onClick={() => navigate(PUBLIC_ROUTES.HOME)}
-                >
-                  My Account
-                </button>
-              </>
+              <button
+                className="public-header__btn public-header__btn--ghost"
+                onClick={() => navigate(PUBLIC_ROUTES.HOME)}
+              >
+                My Account
+              </button>
             ) : (
               <>
                 <button
@@ -80,7 +75,6 @@ export default function PublicHeader() {
       {menuOpen && (
         <div className="public-header__drawer">
           <nav className="public-header__drawer-nav">
-            <Link to={PUBLIC_ROUTES.TOPICS} onClick={() => setMenuOpen(false)}>Topics</Link>
             <Link to={PUBLIC_ROUTES.ABOUT} onClick={() => setMenuOpen(false)}>About</Link>
           </nav>
           {!loading && !user && (

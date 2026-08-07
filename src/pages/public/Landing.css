@@ -2,9 +2,9 @@
 
 /* ── Hero ───────────────────────────────────────────────────────────────────── */
 .landing__hero {
-  min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
+  justify-content: center;
   background: var(--emos-bg);
   padding: 5rem 2rem;
 }
