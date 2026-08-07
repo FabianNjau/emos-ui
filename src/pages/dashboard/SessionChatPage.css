@@ -1091,6 +1091,9 @@
   background: var(--emos-surface);
   padding: 0.625rem 0.75rem 0.75rem;
   flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
 }
 
 .session-chat__composer {
