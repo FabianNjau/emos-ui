@@ -77,3 +77,104 @@
 .public-header__btn--primary:hover {
   opacity: 0.85;
 }
+
+/* ── Hamburger (mobile only) ──────────────────────────────────────────────── */
+.public-header__hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary, #111827);
+  padding: 0.375rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.public-header__hamburger:hover {
+  background: var(--bg-subtle, #f3f4f6);
+}
+
+/* ── Mobile drawer ────────────────────────────────────────────────────────── */
+.public-header__drawer {
+  background: var(--surface, #ffffff);
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding: 1rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.public-header__drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.public-header__drawer-nav a {
+  display: block;
+  padding: 0.625rem 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  transition: color 0.15s;
+}
+
+.public-header__drawer-nav a:last-child {
+  border-bottom: none;
+}
+
+.public-header__drawer-nav a:hover {
+  color: var(--text-primary, #111827);
+}
+
+.public-header__drawer-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.public-header__drawer-auth button {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--surface, #ffffff);
+  color: var(--text-primary, #111827);
+  font-family: var(--font-sans, sans-serif);
+  transition: background 0.15s;
+}
+
+.public-header__drawer-auth button:hover {
+  background: var(--bg-subtle, #f3f4f6);
+}
+
+.public-header__drawer-auth button.btn-primary {
+  background: var(--text-primary, #111827);
+  color: var(--bg, #ffffff);
+  border-color: var(--text-primary, #111827);
+}
+
+.public-header__drawer-auth button.btn-primary:hover {
+  opacity: 0.85;
+}
+
+/* ── Mobile breakpoint ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .public-header__nav {
+    display: none;
+  }
+
+  .public-header__auth {
+    display: none;
+  }
+
+  .public-header__hamburger {
+    display: flex;
+  }
+}
