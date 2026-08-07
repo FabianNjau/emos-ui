@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { postChat, resetSession, type ChatMessage, type ChatResponse } from '../api/emos';
-import { useContextStore } from '../store/useContextStore';
-import { ClarificationPanel } from '../components/chat/ClarificationPanel';
+import { postChat, resetSession, type ChatMessage, type ChatResponse } from '../../api/emos';
+import { useContextStore } from '../../store/useContextStore';
+import { ClarificationPanel } from '../../components/chat/ClarificationPanel';
 import { Send, Bot, User, ChevronDown, ChevronUp, BookOpen, Loader, MessageSquare, PlusCircle, X, Brain } from 'lucide-react';
-import { ResponseRenderer } from '../components/chat/ResponseRenderer';
+import { ResponseRenderer } from '../../components/chat/ResponseRenderer';
 
 function ThinkingBlock({ text }: { text: string }) {
   const [expanded, setExpanded] = useState(false);

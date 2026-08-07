@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getConcepts, getRelationships, getConceptDetail, type ConceptDetail } from '../api/emos';
+import { getConcepts, getRelationships, getConceptDetail, type ConceptDetail } from '../../api/emos';
 
 const W = 1100;
 const H = 700;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getConcepts } from '../api/emos';
-import type { ConceptSummary } from '../api/emos';
+import { getConcepts } from '../../api/emos';
+import type { ConceptSummary } from '../../api/emos';
 import { ChevronDown, ChevronUp, Layers } from 'lucide-react';
 
 const LAYER_COLORS: Record<string, string> = {

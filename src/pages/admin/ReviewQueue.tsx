@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getReviewStats, getReviewQueue, approveItem, rejectItem, batchApprove, batchReject } from '../api/emos';
-import type { ReviewQueueItem } from '../api/emos';
-import ReviewCard from '../components/ui/ReviewCard';
+import { getReviewStats, getReviewQueue, approveItem, rejectItem, batchApprove, batchReject } from '../../api/emos';
+import type { ReviewQueueItem } from '../../api/emos';
+import ReviewCard from '../../components/ui/ReviewCard';
 import { CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 
 const PAGE_SIZE = 20;

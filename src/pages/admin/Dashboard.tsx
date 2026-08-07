@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getStats } from '../api/emos';
-import StatCard from '../components/ui/StatCard';
+import { getStats } from '../../api/emos';
+import StatCard from '../../components/ui/StatCard';
 import {
   Database, FileText, Share2, Lightbulb, CheckCircle,
   ArrowRight, BookOpen

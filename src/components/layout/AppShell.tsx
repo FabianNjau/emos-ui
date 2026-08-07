@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Outlet } from 'react-router-dom';
 import { useThemeStore } from '../../store/useThemeStore';
 import {
   LayoutDashboard, CheckSquare, Share2, Search,
-  MessageSquare, Database, Moon, Sun, Menu, X
+  MessageSquare, Database, Moon, Sun, Menu,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} />, exact: true },
-  { to: '/review', label: 'Review Queue', icon: <CheckSquare size={18} /> },
-  { to: '/knowledge-graph', label: 'Knowledge Graph', icon: <Share2 size={18} /> },
-  { to: '/search', label: 'Semantic Search', icon: <Search size={18} /> },
-  { to: '/chat', label: 'AI Chat', icon: <MessageSquare size={18} /> },
-  { to: '/concepts', label: 'Concepts', icon: <Database size={18} /> },
+  { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={18} />, exact: true },
+  { to: '/admin/review', label: 'Review Queue', icon: <CheckSquare size={18} /> },
+  { to: '/admin/knowledge-graph', label: 'Knowledge Graph', icon: <Share2 size={18} /> },
+  { to: '/admin/search', label: 'Semantic Search', icon: <Search size={18} /> },
+  { to: '/admin/chat', label: 'AI Chat', icon: <MessageSquare size={18} /> },
+  { to: '/admin/concepts', label: 'Concepts', icon: <Database size={18} /> },
 ];
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { theme } = useThemeStore();
   const location = useLocation();
@@ -24,7 +24,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  useEffect(() => { setSidebarOpen(false); }, [location]);
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location]);
 
   return (
     <div className="app-shell">
@@ -81,7 +83,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
             <span className="topbar-breadcrumb">
               <strong>
-                {NAV_ITEMS.find(n =>
+                {NAV_ITEMS.find((n) =>
                   n.exact ? location.pathname === n.to : location.pathname.startsWith(n.to)
                 )?.label || 'EMOS'}
               </strong>
@@ -95,7 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="page-container">
-          {children}
+          <Outlet />
         </main>
       </div>
 

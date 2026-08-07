@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { searchConcepts } from '../api/emos';
-import type { SearchResult } from '../api/emos';
+import { searchConcepts } from '../../api/emos';
+import type { SearchResult } from '../../api/emos';
 import { Search, ArrowRight } from 'lucide-react';
 
 const LAYER_COLORS: Record<string, string> = {
