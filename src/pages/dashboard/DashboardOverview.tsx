@@ -88,7 +88,7 @@ export default function DashboardOverview() {
   const recentSessions = sessions.slice(0, 5);
 
   return (
-    <div style={{ padding: '2rem 2.5rem', maxWidth: 900 }}>
+    <div style={{ padding: '2rem 0', maxWidth: '100%' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{

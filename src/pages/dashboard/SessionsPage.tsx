@@ -64,7 +64,7 @@ export default function SessionsPage() {
   };
 
   return (
-    <div style={{ padding: '2rem 2.5rem', maxWidth: 800 }}>
+    <div style={{ padding: '2rem 0', maxWidth: '100%' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <div>

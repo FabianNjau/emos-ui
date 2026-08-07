@@ -155,14 +155,7 @@ export default function DashboardShell() {
         background: 'var(--bg)',
         overflowX: 'hidden',
       }}>
-        {/* Inner content wrapper — fills space with comfortable max-width */}
-        <div style={{
-          maxWidth: 1100,
-          margin: '0 auto',
-          padding: '2.5rem 2rem',
-        }}>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
 
       <style>{`
