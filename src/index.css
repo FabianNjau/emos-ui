@@ -81,6 +81,22 @@
   --sidebar-text-active: #FFFFFF;
   --sidebar-accent: #176B5B;
   --sidebar-accent-bg: rgba(75, 175, 145, 0.25);
+
+  /* Chat / conversation */
+  --chat-max-width: 800px;
+  --topbar-height: 64px;
+  --session-header-height: 72px;
+  --msg-user-bg: #E7F6EF;
+  --msg-user-border: #D4EEE4;
+  --msg-ai-bg: #FFFFFF;
+  --msg-ai-border: #E7ECE9;
+  --composer-bg: #FFFFFF;
+  --composer-border: #DCE5E1;
+  --response-text: #26332F;
+  --response-heading: #14211E;
+  --response-link: #087A5C;
+  --response-callout-bg: #F1F8F5;
+  --response-code-bg: #10201C;
 }
 
 [data-theme="dark"] {
