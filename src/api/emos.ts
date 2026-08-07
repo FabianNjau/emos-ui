@@ -231,6 +231,7 @@ export interface ChatResponse {
     discussed_concepts: string[];
     turn_count: number;
     session_id: string;
+    user_id: string;
   };
 }
 
