@@ -21,16 +21,13 @@ export default function PublicHeader() {
             alt=""
             width={28}
             height={28}
+            className="public-header__logo-img"
           />
           <span className="public-header__logo-text">EMOS</span>
         </Link>
 
-        {/* Nav — centered, About only */}
-        <nav className="public-header__nav" aria-label="Main navigation">
-          <Link to={PUBLIC_ROUTES.ABOUT} className="public-header__nav-link">
-            About
-          </Link>
-        </nav>
+        {/* Nav — intentionally empty on landing; About in footer */}
+        <nav className="public-header__nav" aria-label="Main navigation" />
 
         {/* Auth */}
         <div className="public-header__auth">

@@ -21,17 +21,23 @@
 .public-header__logo {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.5rem;
   text-decoration: none;
   flex-shrink: 0;
+  /* Ensure the image and text are pixel-perfect vertically centered */
+  line-height: 1;
 }
 
-.public-header__logo img {
+.public-header__logo-img {
   width: 28px;
   height: 28px;
   object-fit: contain;
   border-radius: 7px;
   display: block;
+  /* Force vertical center alignment */
+  vertical-align: middle;
+  align-self: center;
 }
 
 .public-header__logo-text {
@@ -41,6 +47,10 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--emos-text);
+  /* Force same baseline as image */
+  vertical-align: middle;
+  line-height: 1;
+  align-self: center;
 }
 
 /* Nav — centered */

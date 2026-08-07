@@ -158,6 +158,26 @@
   font-weight: 500;
 }
 
+/* About link — in body, not nav */
+.landing__about-link {
+  margin-top: 1.5rem;
+}
+
+.landing__about-link button {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--emos-text-muted);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.landing__about-link button:hover {
+  color: var(--emos-text-secondary);
+}
+
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .landing__hero {

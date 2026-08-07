@@ -69,6 +69,13 @@ export default function Landing() {
               <span className="landing__stat-label">Domains</span>
             </div>
           </div>
+
+          {/* About link — in body, not nav */}
+          <p className="landing__about-link">
+            <button onClick={() => navigate(PUBLIC_ROUTES.ABOUT)}>
+              About EMOS →
+            </button>
+          </p>
         </div>
       </section>
 
