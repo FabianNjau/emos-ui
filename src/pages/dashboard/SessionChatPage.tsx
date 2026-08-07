@@ -195,7 +195,7 @@ export default function SessionChatPage() {
   const session = sessions.find(s => s.id === sessionId);
 
   const { data: messages = [], isLoading } = useSessionChat(sessionId ?? '');
-  const appendMessage = useAppendMessage(sessionId ?? '');
+  const appendMessage = useAppendMessage();
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -233,7 +233,7 @@ export default function SessionChatPage() {
 
     try {
       // Persist user message
-      await appendMessage.mutateAsync(userMsg);
+      await appendMessage.mutateAsync({ sessionId, message: userMsg });
 
       // Call EMOS API
       const res = await fetch(`${import.meta.env.VITE_API_BASE ?? '/api'}/chat`, {
@@ -252,7 +252,7 @@ export default function SessionChatPage() {
       };
 
       // Persist assistant message
-      await appendMessage.mutateAsync(assistantMsg);
+      await appendMessage.mutateAsync({ sessionId, message: assistantMsg });
 
       // Update session discussed concepts if sources present
       if (data.sources?.length > 0) {
