@@ -45,6 +45,22 @@
   margin-bottom: 1rem;
 }
 
+.auth-card__notice {
+  background: var(--green-soft, #dcfce7);
+  color: var(--green, #166534);
+  font-size: 0.875rem;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.auth-card__notice strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.9375rem;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;

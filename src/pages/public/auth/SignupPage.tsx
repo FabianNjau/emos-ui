@@ -12,14 +12,21 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      await signUp(email, password, displayName || undefined);
-      navigate(PUBLIC_ROUTES.HOME);
+      const data = await signUp(email, password, displayName || undefined);
+      if (data.session) {
+        // Email confirmation is disabled — logged in immediately
+        navigate(PUBLIC_ROUTES.HOME);
+      } else {
+        // Email confirmation required — show success state
+        setEmailSent(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed.');
     } finally {
@@ -37,6 +44,16 @@ export default function SignupPage() {
         </p>
 
         {error && <p className="auth-card__error">{error}</p>}
+
+        {emailSent && (
+          <div className="auth-card__notice">
+            <strong>Check your email</strong>
+            <p>
+              We sent a confirmation link to <strong>{email}</strong>.
+              Click the link to activate your account.
+            </p>
+          </div>
+        )}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label className="auth-form__label">
