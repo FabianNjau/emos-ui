@@ -31,6 +31,7 @@ export const DASHBOARD_ROUTES = {
   SAVED: '/dashboard/saved',
   EXPLORE: '/dashboard/explore',
   PROFILES: '/dashboard/profiles',
+  UPGRADE: '/dashboard/upgrade',
 } as const;
 
 /** All route paths as a union */

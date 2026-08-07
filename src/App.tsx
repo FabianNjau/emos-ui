@@ -34,6 +34,7 @@ import SavedPage from './pages/dashboard/SavedPage';
 import ExplorePage from './pages/dashboard/ExplorePage';
 import SessionChatPage from './pages/dashboard/SessionChatPage';
 import ProfilePage from './pages/dashboard/ProfilePage';
+import UpgradePage from './pages/dashboard/UpgradePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +71,7 @@ export default function App() {
             <Route path={DASHBOARD_ROUTES.SAVED} element={<SavedPage />} />
             <Route path={DASHBOARD_ROUTES.EXPLORE} element={<ExplorePage />} />
             <Route path={DASHBOARD_ROUTES.CHATS + '/:sessionId'} element={<SessionChatPage />} />
+            <Route path={DASHBOARD_ROUTES.UPGRADE} element={<UpgradePage />} />
             <Route path={DASHBOARD_ROUTES.PROFILES} element={<ProfilePage />} />
             <Route path={PUBLIC_ROUTES.ASK} element={<AskPage />} />
           </Route>
