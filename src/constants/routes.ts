@@ -10,6 +10,7 @@ export const PUBLIC_ROUTES = {
   LOGIN: '/auth/login',
   SIGNUP: '/auth/signup',
   FORGOT_PASSWORD: '/auth/forgot-password',
+  CALLBACK: '/auth/callback',
 } as const;
 
 /** Admin route paths */

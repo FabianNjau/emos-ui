@@ -22,6 +22,7 @@ import TopicPage from './pages/public/TopicPage';
 import ConceptDetail from './pages/public/ConceptDetail';
 import AskPage from './pages/public/AskPage';
 import AboutPage from './pages/public/AboutPage';
+import { AuthCallback } from './pages/public/auth/AuthCallback';
 import LoginPage from './pages/public/auth/LoginPage';
 import SignupPage from './pages/public/auth/SignupPage';
 
@@ -49,6 +50,7 @@ export default function App() {
             <Route path={PUBLIC_ROUTES.CONCEPT} element={<ConceptDetail />} />
             <Route path={PUBLIC_ROUTES.ASK} element={<AskPage />} />
             <Route path={PUBLIC_ROUTES.ABOUT} element={<AboutPage />} />
+            <Route path={PUBLIC_ROUTES.CALLBACK} element={<AuthCallback />} />
             <Route path={PUBLIC_ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={PUBLIC_ROUTES.SIGNUP} element={<SignupPage />} />
           </Route>

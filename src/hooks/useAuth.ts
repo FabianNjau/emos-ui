@@ -44,7 +44,10 @@ export function useAuth() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: displayName ?? null } },
+      options: {
+        data: { display_name: displayName ?? null },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
     if (error) { setLoading(false); throw error; }
     if (data.session) { setSession(data.session); setUser(sessionUser(data.session)); }
