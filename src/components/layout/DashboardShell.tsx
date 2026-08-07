@@ -65,30 +65,17 @@ export default function DashboardShell() {
 
         {/* Brand */}
         <div className="dash-sidebar__brand">
-          {/* SVG logo — figure-8 knowledge loop mark */}
-            <svg
-              className="dash-sidebar__logo-mark"
-              viewBox="0 0 40 40"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M20 6 C13 6 7 11 7 16 C7 21 13 24 20 20 C27 16 33 19 33 24 C33 29 27 34 20 34"
-                stroke="#36A77D"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M20 6 C27 6 33 11 33 16 C33 21 27 24 20 20 C13 16 7 19 7 24 C7 29 13 34 20 34"
-                stroke="#95DEC4"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div className="dash-sidebar__brand-text">
-              <span className="dash-sidebar__brand-name">EMOS</span>
-              <span className="dash-sidebar__brand-sub">Knowledge Platform</span>
-            </div>
+          <img
+            src="/assets/emos-logo-square.png"
+            alt="EMOS logo"
+            className="dash-sidebar__logo-img"
+            width={40}
+            height={40}
+          />
+          <div className="dash-sidebar__brand-text">
+            <span className="dash-sidebar__brand-name">EMOS</span>
+            <span className="dash-sidebar__brand-sub">Knowledge Platform</span>
+          </div>
         </div>
 
         {/* Nav */}

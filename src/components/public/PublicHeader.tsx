@@ -14,8 +14,15 @@ export default function PublicHeader() {
     <header className="public-header">
       <div className="public-header__inner">
         {/* Logo */}
-        <Link to={PUBLIC_ROUTES.HOME} className="public-header__logo">
-          EMOS
+        <Link to={PUBLIC_ROUTES.HOME} className="public-header__logo" aria-label="EMOS — Home">
+          <img
+            src="/assets/emos-logo-square.png"
+            alt=""
+            width={32}
+            height={32}
+            style={{ objectFit: 'contain', borderRadius: '6px' }}
+          />
+          <span>EMOS</span>
         </Link>
 
         {/* Nav */}

@@ -36,7 +36,7 @@ export default function AppShell() {
 
       <aside className={`sidebar${sidebarOpen ? ' sidebar--open' : ''}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-mark">E</div>
+          <img src="/assets/emos-logo-square.png" alt="" width={36} height={36} style={{ objectFit: 'contain', borderRadius: 8 }} />
           <div>
             <div className="sidebar-logo-text">EMOS</div>
             <div className="sidebar-logo-sub">Knowledge Factory</div>
