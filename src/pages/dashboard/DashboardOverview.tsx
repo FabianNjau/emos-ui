@@ -1,6 +1,6 @@
 /**
- * DashboardOverview — authenticated home page after login.
- * Shows stats, recent sessions, quick actions.
+ * DashboardOverview — authenticated home page.
+ * Matches the EMOS design mockup.
  */
 import { Link } from 'react-router-dom';
 import { DASHBOARD_ROUTES, PUBLIC_ROUTES } from '../../constants/routes';
@@ -11,60 +11,16 @@ import { useAuth } from '../../hooks/useAuth';
 import {
   MessageSquare,
   Bookmark,
-  Compass,
   Clock,
-  ChevronRight,
   Loader,
   Trash2,
-  PlusCircle,
+  Compass,
+  Sparkles,
+  ChevronRight,
   BarChart3,
+  BookmarkCheck,
 } from 'lucide-react';
-
-function StatCard({
-  label,
-  value,
-  icon,
-  color,
-}: {
-  label: string;
-  value: React.ReactNode;
-  icon: React.ReactNode;
-  color: string;
-}) {
-  return (
-    <div style={{
-      background: 'var(--surface)',
-      border: '1px solid var(--border)',
-      borderRadius: 'var(--radius-lg)',
-      padding: '1.25rem',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 14,
-    }}>
-      <div style={{
-        width: 44,
-        height: 44,
-        borderRadius: 10,
-        background: `${color}18`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color,
-        flexShrink: 0,
-      }}>
-        {icon}
-      </div>
-      <div>
-        <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.1 }}>
-          {value}
-        </div>
-        <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 2 }}>
-          {label}
-        </div>
-      </div>
-    </div>
-  );
-}
+import './DashboardOverview.css';
 
 function timeAgo(isoString: string): string {
   const now = Date.now();
@@ -85,200 +41,148 @@ export default function DashboardOverview() {
   const { data: profiles = [], isLoading: profilesLoading } = useContextProfiles();
   const deleteSession = useDeleteSession();
 
-  const recentSessions = sessions.slice(0, 5);
+  const displayName = user?.display_name ?? user?.email?.split('@')[0] ?? 'there';
+  const recentSessions = sessions.slice(0, 4);
 
   return (
-    <div style={{ padding: '2rem 0', maxWidth: '100%' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{
-          fontSize: 22,
-          fontWeight: 700,
-          color: 'var(--text-primary)',
-          marginBottom: 4,
-        }}>
-          Welcome back{user?.display_name ? `, ${user.display_name}` : ''}
-        </h1>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
-          Your EMOS workspace — chat history, saved insights, and knowledge explorer.
-        </p>
+    <div className="dash-overview">
+
+      {/* Greeting */}
+      <div className="dash-overview__greeting">
+        <h1>Welcome back, {displayName} 👋</h1>
+        <p>Your EMOS workspace — chat history, saved insights, and knowledge explorer.</p>
       </div>
 
-      {/* Quick start */}
-      <Link
-        to={PUBLIC_ROUTES.ASK}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '1rem 1.25rem',
-          background: 'var(--accent)',
-          color: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          textDecoration: 'none',
-          marginBottom: '1.75rem',
-          transition: 'opacity 0.15s ease',
-        }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <PlusCircle size={20} />
-          <span style={{ fontWeight: 600, fontSize: 15 }}>Start a new conversation</span>
+      {/* CTA Banner */}
+      <Link to={PUBLIC_ROUTES.ASK} className="dash-overview__cta">
+        <div className="dash-overview__cta-left">
+          <Sparkles size={18} />
+          <span>Start a new conversation</span>
         </div>
-        <ChevronRight size={18} />
+        <span className="dash-overview__cta-btn">
+          New Conversation <ChevronRight size={13} />
+        </span>
       </Link>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: '2rem' }}>
-        <StatCard
-          label="Chat sessions"
-          value={sessionsLoading ? <Loader size={16} className="spin" /> : sessions.length}
-          icon={<MessageSquare size={20} />}
-          color="var(--accent)"
-        />
-        <StatCard
-          label="Saved concepts"
-          value={bookmarksLoading ? <Loader size={16} className="spin" /> : bookmarks.length}
-          icon={<Bookmark size={20} />}
-          color="#0f7b6c"
-        />
-        <StatCard
-          label="Context profiles"
-          value={profiles?.length ?? 0}
-          icon={<BarChart3 size={20} />}
-          color="#5b6abf"
-        />
+      <div className="dash-overview__stats">
+        {/* Sessions */}
+        <div className="dash-overview__stat-card">
+          <div
+            className="dash-overview__stat-icon"
+            style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}
+          >
+            <MessageSquare size={18} />
+          </div>
+          <div className="dash-overview__stat-info">
+            <div className="dash-overview__stat-num">
+              {sessionsLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : sessions.length}
+            </div>
+            <div className="dash-overview__stat-label">Chat sessions</div>
+            {sessions.length > 0 && (
+              <div className="dash-overview__stat-sub">+{Math.min(sessions.length, sessions.filter(s => {
+                const age = Date.now() - new Date(s.created_at).getTime();
+                return age < 7 * 24 * 60 * 60 * 1000;
+              }).length)} this week</div>
+            )}
+          </div>
+        </div>
+
+        {/* Saved */}
+        <div className="dash-overview__stat-card">
+          <div
+            className="dash-overview__stat-icon"
+            style={{ background: '#E8F2F0', color: '#3C7A6B' }}
+          >
+            <BookmarkCheck size={18} />
+          </div>
+          <div className="dash-overview__stat-info">
+            <div className="dash-overview__stat-num">
+              {bookmarksLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : bookmarks.length}
+            </div>
+            <div className="dash-overview__stat-label">Saved concepts</div>
+            {bookmarks.length === 0 && (
+              <div className="dash-overview__stat-sub">Start saving</div>
+            )}
+          </div>
+        </div>
+
+        {/* Profiles */}
+        <div className="dash-overview__stat-card">
+          <div
+            className="dash-overview__stat-icon"
+            style={{ background: '#EEF0F8', color: '#4F5E8C' }}
+          >
+            <BarChart3 size={18} />
+          </div>
+          <div className="dash-overview__stat-info">
+            <div className="dash-overview__stat-num">
+              {profilesLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : profiles.length}
+            </div>
+            <div className="dash-overview__stat-label">Context profiles</div>
+            {profiles.length === 0 && (
+              <div className="dash-overview__stat-sub">Create your first</div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Recent sessions */}
-      <div style={{ marginBottom: '2rem' }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '0.75rem',
-        }}>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
-            Recent sessions
-          </h2>
+      {/* Recent Sessions */}
+      <div className="dash-overview__sessions">
+        <div className="dash-overview__section-header">
+          <span className="dash-overview__section-title">Recent sessions</span>
           {sessions.length > 0 && (
-            <Link
-              to={DASHBOARD_ROUTES.CHATS}
-              style={{
-                fontSize: 13,
-                color: 'var(--accent)',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
+            <Link to={DASHBOARD_ROUTES.CHATS} className="dash-overview__section-link">
               View all
             </Link>
           )}
         </div>
 
         {sessionsLoading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-            <Loader size={20} className="spin" />
+          <div className="dash-overview__loading">
+            <Loader size={20} className="dash-overview__loading-icon" />
           </div>
         ) : sessions.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '2rem',
-            color: 'var(--text-tertiary)',
-            fontSize: 14,
-            background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-lg)',
-          }}>
+          <div className="dash-overview__empty">
             No sessions yet.{' '}
-            <Link to={PUBLIC_ROUTES.ASK} style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-              Start your first chat
-            </Link>
+            <Link to={PUBLIC_ROUTES.ASK}>Start your first chat</Link>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="dash-overview__sessions-list">
             {recentSessions.map(session => (
-              <div
-                key={session.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.875rem 1rem',
-                  background: 'var(--surface)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius)',
-                  gap: 12,
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                  <MessageSquare size={15} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{
-                      fontSize: 14,
-                      fontWeight: 500,
-                      color: 'var(--text-primary)',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
+              <div key={session.id} className="dash-overview__session-card">
+                <div className="dash-overview__session-info">
+                  <MessageSquare size={14} className="dash-overview__session-icon" />
+                  <div className="dash-overview__session-text">
+                    <div className="dash-overview__session-title">
                       {session.title ?? 'Untitled session'}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Clock size={11} />
+                    <div className="dash-overview__session-meta">
+                      <span className="dash-overview__session-time">
+                        <Clock size={10} />
                         {timeAgo(session.updated_at)}
                       </span>
                       {session.turn_count > 0 && (
-                        <span style={{
-                          fontSize: 11,
-                          background: 'var(--surface-2)',
-                          color: 'var(--text-tertiary)',
-                          padding: '1px 6px',
-                          borderRadius: 4,
-                        }}>
+                        <span className="dash-overview__session-turns">
                           {session.turn_count} turns
                         </span>
                       )}
                     </div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <div className="dash-overview__session-actions">
                   <Link
                     to={`${DASHBOARD_ROUTES.CHATS}/${session.id}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 4,
-                      padding: '0.3rem 0.75rem',
-                      background: 'var(--accent)',
-                      color: '#fff',
-                      borderRadius: 6,
-                      fontSize: 12,
-                      fontWeight: 600,
-                      textDecoration: 'none',
-                    }}
+                    className="dash-overview__resume-btn"
                   >
                     Resume
                   </Link>
                   <button
                     onClick={() => deleteSession.mutate(session.id)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '0.3rem',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: 'var(--text-tertiary)',
-                      borderRadius: 4,
-                    }}
+                    className="dash-overview__delete-btn"
                     title="Delete session"
-                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--red)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
               </div>
@@ -287,58 +191,32 @@ export default function DashboardOverview() {
         )}
       </div>
 
-      {/* Quick links */}
-      <div>
-        <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
-          Quick access
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <Link
-            to={DASHBOARD_ROUTES.SAVED}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '0.875rem 1rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              textDecoration: 'none',
-            }}
-          >
-            <Bookmark size={16} style={{ color: '#0f7b6c' }} />
-            <span style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 500 }}>
-              Saved Insights
-            </span>
+      {/* Quick Access */}
+      <div className="dash-overview__quick-access">
+        <div className="dash-overview__section-header" style={{ marginBottom: '0.75rem' }}>
+          <span className="dash-overview__section-title">Quick access</span>
+        </div>
+        <div className="dash-overview__quick-grid">
+          <Link to={DASHBOARD_ROUTES.SAVED} className="dash-overview__quick-card">
+            <div
+              className="dash-overview__quick-card-icon"
+              style={{ background: '#E8F2F0', color: 'var(--accent)' }}
+            >
+              <Bookmark size={16} />
+            </div>
+            <span className="dash-overview__quick-card-label">Saved Insights</span>
           </Link>
-          <Link
-            to={DASHBOARD_ROUTES.EXPLORE}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '0.875rem 1rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              textDecoration: 'none',
-            }}
-          >
-            <Compass size={16} style={{ color: '#5b6abf' }} />
-            <span style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: 500 }}>
-              Knowledge Explorer
-            </span>
+          <Link to={DASHBOARD_ROUTES.EXPLORE} className="dash-overview__quick-card">
+            <div
+              className="dash-overview__quick-card-icon"
+              style={{ background: '#EEF0F8', color: '#4F5E8C' }}
+            >
+              <Compass size={16} />
+            </div>
+            <span className="dash-overview__quick-card-label">Knowledge Explorer</span>
           </Link>
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .spin { animation: spin 1s linear infinite; }
-      `}</style>
     </div>
   );
 }

@@ -37,7 +37,17 @@
   --radius-lg: 10px;
   --radius-xl: 16px;
   --sidebar-width: 260px;
-  --topbar-height: 64px;
+  --topbar-height: 60px;
+
+  /* Sidebar — always dark forest green */
+  --sidebar-bg: #0F2317;
+  --sidebar-surface: #152B1D;
+  --sidebar-surface-hover: #1C3525;
+  --sidebar-border: rgba(255,255,255,0.07);
+  --sidebar-text: #C8DDD2;
+  --sidebar-text-muted: #7A9E8C;
+  --sidebar-text-active: #4ADE8B;
+  --sidebar-accent: #3C7A6B;
 }
 
 [data-theme="dark"] {
