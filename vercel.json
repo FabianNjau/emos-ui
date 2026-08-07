@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "buildCommand": "cd emos-ui && npm install && npm run build",
+  "outputDirectory": "emos-ui/dist",
+  "installCommand": "cd emos-ui && npm install",
+  "framework": "vite",
+  "public": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://emosmarketing.onrender.com/api/$1" }
+  ]
+}
