@@ -25,13 +25,10 @@ export default function PublicHeader() {
           <span>EMOS</span>
         </Link>
 
-        {/* Nav */}
+        {/* Nav — public links only, no auth-gated routes */}
         <nav className="public-header__nav" aria-label="Main navigation">
           <Link to={PUBLIC_ROUTES.TOPICS} className="public-header__nav-link">
             Topics
-          </Link>
-          <Link to={PUBLIC_ROUTES.ASK} className="public-header__nav-link">
-            Ask
           </Link>
           <Link to={PUBLIC_ROUTES.ABOUT} className="public-header__nav-link">
             About
@@ -84,7 +81,6 @@ export default function PublicHeader() {
         <div className="public-header__drawer">
           <nav className="public-header__drawer-nav">
             <Link to={PUBLIC_ROUTES.TOPICS} onClick={() => setMenuOpen(false)}>Topics</Link>
-            <Link to={PUBLIC_ROUTES.ASK} onClick={() => setMenuOpen(false)}>Ask</Link>
             <Link to={PUBLIC_ROUTES.ABOUT} onClick={() => setMenuOpen(false)}>About</Link>
           </nav>
           {!loading && !user && (
