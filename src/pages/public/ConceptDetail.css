@@ -1,6 +1,6 @@
 .concept-detail {
   padding: 2rem 1.5rem 5rem;
-  background: var(--color-bg, #ffffff);
+  background: var(--bg, #ffffff);
 }
 
 .concept-detail__inner {
@@ -12,7 +12,7 @@
 .concept-detail__error {
   text-align: center;
   padding: 4rem 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .concept-detail__error {
@@ -22,13 +22,13 @@
 .concept-detail__back {
   display: inline-block;
   font-size: 0.875rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   text-decoration: none;
   margin-bottom: 1.5rem;
 }
 
 .concept-detail__back:hover {
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .concept-detail__header {
@@ -50,20 +50,20 @@
 }
 
 .concept-detail__badge--domain {
-  background: var(--color-accent, #2563eb);
+  background: var(--accent, #2563eb);
   color: #ffffff;
 }
 
 .concept-detail__badge--layer {
-  background: var(--color-subtle, #f3f4f6);
-  color: var(--color-muted, #6b7280);
+  background: var(--bg-subtle, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
 }
 
 .concept-detail__name {
   font-family: var(--font-serif, Georgia, serif);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   letter-spacing: -0.025em;
   margin: 0 0 1rem;
   line-height: 1.2;
@@ -72,7 +72,7 @@
 .concept-detail__definition {
   font-size: 1.0625rem;
   line-height: 1.7;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0;
 }
 
@@ -85,7 +85,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0 0 1rem;
 }
 
@@ -94,7 +94,7 @@
 .concept-detail__mistakes {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0;
 }
 
@@ -107,9 +107,9 @@
 
 .evidence-card {
   padding: 1.125rem 1.25rem;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--border, #e5e7eb);
   border-radius: 8px;
-  background: var(--color-subtle, #f9fafb);
+  background: var(--bg-subtle, #f9fafb);
 }
 
 .evidence-card__badges {
@@ -129,19 +129,19 @@
 .evidence-badge--high { background: #dcfce7; color: #166534; }
 .evidence-badge--medium { background: #fef9c3; color: #854d0e; }
 .evidence-badge--low { background: #fee2e2; color: #991b1b; }
-.evidence-badge--type { background: var(--color-subtle, #f3f4f6); color: var(--color-muted, #6b7280); }
+.evidence-badge--type { background: var(--bg-subtle, #f3f4f6); color: var(--text-secondary, #6b7280); }
 .evidence-badge--applic { background: #eff6ff; color: #1e40af; }
 
 .evidence-card__finding {
   font-size: 0.9375rem;
   line-height: 1.65;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.625rem;
 }
 
 .evidence-card__source {
   font-size: 0.8125rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
   font-style: italic;
 }
@@ -158,14 +158,14 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.875rem 1.125rem;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--border, #e5e7eb);
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.15s;
 }
 
 .relationship-card:hover {
-  border-color: var(--color-text, #111827);
+  border-color: var(--text-primary, #111827);
 }
 
 .relationship-card__type {
@@ -173,26 +173,26 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--color-accent, #2563eb);
+  color: var(--accent, #2563eb);
 }
 
 .relationship-card__name {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .relationship-card__explanation {
   font-size: 0.8125rem;
   line-height: 1.55;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
 /* ── CTA ───────────────────────────────────────────────────────────────────── */
 .concept-detail__cta {
   padding-top: 2rem;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--border, #e5e7eb);
 }
 
 .concept-detail__ask-btn {
@@ -200,7 +200,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--color-text, #111827);
+  background: var(--text-primary, #111827);
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 600;

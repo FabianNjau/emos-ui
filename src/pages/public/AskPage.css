@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 64px);
-  background: var(--color-bg, #ffffff);
+  background: var(--bg, #ffffff);
 }
 
 .ask-page__inner {
@@ -25,13 +25,13 @@
   font-family: var(--font-serif, Georgia, serif);
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.5rem;
 }
 
 .ask-page__sub {
   font-size: 0.9375rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
@@ -49,7 +49,7 @@
 .ask-page__empty-state {
   text-align: center;
   padding: 3rem 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   font-size: 0.9375rem;
 }
 
@@ -61,7 +61,7 @@
 .ask-page__example-hint button {
   background: none;
   border: none;
-  color: var(--color-accent, #2563eb);
+  color: var(--accent, #2563eb);
   cursor: pointer;
   font-size: inherit;
   padding: 0;
@@ -94,7 +94,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .chat-msg__content {
@@ -105,14 +105,14 @@
 }
 
 .chat-msg--user .chat-msg__content {
-  background: var(--color-text, #111827);
+  background: var(--text-primary, #111827);
   color: #ffffff;
   border-bottom-right-radius: 4px;
 }
 
 .chat-msg--assistant .chat-msg__content {
-  background: var(--color-subtle, #f3f4f6);
-  color: var(--color-text, #111827);
+  background: var(--bg-subtle, #f3f4f6);
+  color: var(--text-primary, #111827);
   border-bottom-left-radius: 4px;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .chat-msg__typing {
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   font-style: italic;
 }
 
@@ -139,7 +139,7 @@
 .chat-msg__sources-label {
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .chat-msg__source-item {
@@ -153,17 +153,17 @@
   display: flex;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--border, #e5e7eb);
 }
 
 .ask-page__input {
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 0.9375rem;
-  border: 1.5px solid var(--color-border, #e5e7eb);
+  border: 1.5px solid var(--border, #e5e7eb);
   border-radius: 10px;
-  background: var(--color-bg, #ffffff);
-  color: var(--color-text, #111827);
+  background: var(--bg, #ffffff);
+  color: var(--text-primary, #111827);
   resize: none;
   outline: none;
   font-family: inherit;
@@ -172,14 +172,14 @@
 }
 
 .ask-page__input:focus {
-  border-color: var(--color-accent, #2563eb);
+  border-color: var(--accent, #2563eb);
 }
 
 .ask-page__submit {
   padding: 0.75rem 1.5rem;
   font-size: 0.9375rem;
   font-weight: 600;
-  background: var(--color-text, #111827);
+  background: var(--text-primary, #111827);
   color: #ffffff;
   border: none;
   border-radius: 10px;

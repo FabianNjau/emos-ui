@@ -1,6 +1,6 @@
 .search-results {
   padding: 3rem 1.5rem 5rem;
-  background: var(--color-bg, #ffffff);
+  background: var(--bg, #ffffff);
 }
 
 .search-results__inner {
@@ -16,18 +16,18 @@
   font-family: var(--font-serif, Georgia, serif);
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.5rem;
 }
 
 .search-results__title em {
   font-style: normal;
-  color: var(--color-accent, #2563eb);
+  color: var(--accent, #2563eb);
 }
 
 .search-results__count {
   font-size: 0.875rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
@@ -44,7 +44,7 @@
 .search-results__empty {
   text-align: center;
   padding: 4rem 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .search-results__list {
@@ -56,14 +56,14 @@
 .search-result-card {
   display: block;
   padding: 1.25rem 1.5rem;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--border, #e5e7eb);
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.15s;
 }
 
 .search-result-card:hover {
-  border-color: var(--color-text, #111827);
+  border-color: var(--text-primary, #111827);
   transform: translateY(-1px);
 }
 
@@ -79,21 +79,21 @@
   font-weight: 500;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  background: var(--color-subtle, #f3f4f6);
-  color: var(--color-muted, #6b7280);
+  background: var(--bg-subtle, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
 }
 
 .search-result-card__name {
   font-size: 1.0625rem;
   font-weight: 600;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.5rem;
 }
 
 .search-result-card__def {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0 0 0.75rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -105,19 +105,19 @@
   display: flex;
   gap: 1rem;
   font-size: 0.8125rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .search-result-card__score {
-  color: var(--color-border-strong, #d1d5db);
+  color: var(--border-strong, #d1d5db);
 }
 
 .search-results__hint {
   text-align: center;
   padding: 3rem 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .search-results__hint a {
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }

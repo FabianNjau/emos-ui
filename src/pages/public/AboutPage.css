@@ -1,6 +1,6 @@
 .about-page {
   padding: 3rem 1.5rem 5rem;
-  background: var(--color-bg, #ffffff);
+  background: var(--bg, #ffffff);
 }
 
 .about-page__inner {
@@ -12,7 +12,7 @@
   font-family: var(--font-serif, Georgia, serif);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   letter-spacing: -0.025em;
   margin: 0 0 1.5rem;
 }
@@ -20,10 +20,10 @@
 .about-page__lead {
   font-size: 1.0625rem;
   line-height: 1.7;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 3rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  border-bottom: 1px solid var(--border, #e5e7eb);
 }
 
 .about-section {
@@ -35,7 +35,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0 0 1.25rem;
 }
 
@@ -58,7 +58,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--color-text, #111827);
+  background: var(--text-primary, #111827);
   color: #ffffff;
   font-size: 0.8125rem;
   font-weight: 700;
@@ -68,14 +68,14 @@
 .about-step__title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.25rem;
 }
 
 .about-step__body {
   font-size: 0.9375rem;
   line-height: 1.65;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
@@ -90,7 +90,7 @@
 
 .about-list li {
   font-size: 0.9375rem;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   padding-left: 1.25rem;
   position: relative;
 }
@@ -99,7 +99,7 @@
   content: '—';
   position: absolute;
   left: 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .about-legend {
@@ -113,7 +113,7 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 0.9375rem;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .about-legend__badge {
@@ -132,7 +132,7 @@
   display: flex;
   gap: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--border, #e5e7eb);
   flex-wrap: wrap;
 }
 
@@ -140,7 +140,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  background: var(--color-text, #111827);
+  background: var(--text-primary, #111827);
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -155,10 +155,10 @@
 
 .about-cta-btn--secondary {
   background: transparent;
-  color: var(--color-text, #111827);
-  border: 1.5px solid var(--color-border-strong, #d1d5db);
+  color: var(--text-primary, #111827);
+  border: 1.5px solid var(--border-strong, #d1d5db);
 }
 
 .about-cta-btn--secondary:hover {
-  border-color: var(--color-text, #111827);
+  border-color: var(--text-primary, #111827);
 }

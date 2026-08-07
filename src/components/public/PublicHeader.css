@@ -2,8 +2,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--color-bg, #ffffff);
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  background: var(--bg, #ffffff);
+  border-bottom: 1px solid var(--border, #e5e7eb);
 }
 
 .public-header__inner {
@@ -20,7 +20,7 @@
   font-family: var(--font-serif, serif);
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   text-decoration: none;
   letter-spacing: -0.02em;
 }
@@ -35,13 +35,13 @@
 .public-header__nav-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .public-header__nav-link:hover {
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .public-header__auth {
@@ -62,16 +62,16 @@
 
 .public-header__btn--ghost {
   background: transparent;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .public-header__btn--ghost:hover {
-  background: var(--color-subtle, #f3f4f6);
+  background: var(--bg-subtle, #f3f4f6);
 }
 
 .public-header__btn--primary {
-  background: var(--color-text, #111827);
-  color: var(--color-bg, #ffffff);
+  background: var(--text-primary, #111827);
+  color: var(--bg, #ffffff);
 }
 
 .public-header__btn--primary:hover {

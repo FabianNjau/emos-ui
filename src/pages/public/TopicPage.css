@@ -1,6 +1,6 @@
 .topic-page {
   padding: 2rem 1.5rem 5rem;
-  background: var(--color-bg, #ffffff);
+  background: var(--bg, #ffffff);
 }
 
 .topic-page__inner {
@@ -14,27 +14,27 @@
 
 .topic-page__back {
   font-size: 0.875rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   text-decoration: none;
   display: inline-block;
   margin-bottom: 0.75rem;
 }
 
 .topic-page__back:hover {
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
 }
 
 .topic-page__title {
   font-family: var(--font-serif, Georgia, serif);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.25rem;
 }
 
 .topic-page__count {
   font-size: 0.875rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
@@ -42,7 +42,7 @@
 .topic-page__empty {
   text-align: center;
   padding: 4rem 0;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
 }
 
 .topic-page__list {
@@ -54,14 +54,14 @@
 .topic-concept-card {
   display: block;
   padding: 1.125rem 1.5rem;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--border, #e5e7eb);
   border-radius: 10px;
   text-decoration: none;
   transition: all 0.15s;
 }
 
 .topic-concept-card:hover {
-  border-color: var(--color-text, #111827);
+  border-color: var(--text-primary, #111827);
 }
 
 .topic-concept-card__top {
@@ -76,20 +76,20 @@
   font-weight: 500;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  background: var(--color-subtle, #f3f4f6);
-  color: var(--color-muted, #6b7280);
+  background: var(--bg-subtle, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
 }
 
 .topic-concept-card__name {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text, #111827);
+  color: var(--text-primary, #111827);
   margin: 0 0 0.375rem;
 }
 
 .topic-concept-card__def {
   font-size: 0.875rem;
-  color: var(--color-muted, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
