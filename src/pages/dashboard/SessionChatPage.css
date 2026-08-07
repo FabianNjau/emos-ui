@@ -12,46 +12,45 @@
   background: var(--emos-bg);
 }
 
-/* ── Topbar (48px — compact for laptop screens) ─────────────────────── */
-.session-chat__topbar {
-  height: var(--topbar-height, 48px);
-  min-height: var(--topbar-height, 48px);
+/* ── Session context bar (slim inline header, 48px) ──────────────────── */
+.session-chat__context {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0 1rem;
-  background: var(--emos-surface);
+  padding: 0.625rem 1.25rem;
   border-bottom: 1px solid var(--emos-border);
-  z-index: 10;
+  background: var(--emos-surface);
   flex-shrink: 0;
 }
 
-.session-chat__topbar-back {
+.session-chat__back {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   background: var(--emos-bg-subtle);
   border: 1px solid var(--emos-border);
   color: var(--emos-text-secondary);
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
+  transition: background 0.15s ease;
 }
 
-.session-chat__topbar-back:hover {
+.session-chat__back:hover {
   background: var(--emos-border);
   color: var(--emos-text);
 }
 
-.session-chat__topbar-info {
-  flex: 1;
+.session-chat__context-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   min-width: 0;
 }
 
-.session-chat__topbar-title {
+.session-chat__context-title {
   font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 600;
@@ -59,88 +58,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 1.2;
 }
 
-.session-chat__topbar-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1px;
-}
-
-.session-chat__topbar-date {
-  display: flex;
-  align-items: center;
-  gap: 3px;
+.session-chat__context-meta {
   font-family: var(--font-sans);
   font-size: 0.6875rem;
   color: var(--emos-text-muted);
-}
-
-.session-chat__topbar-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 6px;
-  background: #E7F6EF;
-  color: #087A5C;
-  border-radius: 10px;
-  font-family: var(--font-sans);
-  font-size: 0.625rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.session-chat__topbar-badge--active {
-  background: #E7F6EF;
-  color: #087A5C;
-}
-
-.session-chat__topbar-badge--saved {
-  background: var(--emos-purple-100);
-  color: var(--emos-purple-500);
-}
-
-.session-chat__topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.125rem;
-  flex-shrink: 0;
-}
-
-.session-chat__topbar-icon-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--emos-text-muted);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.session-chat__topbar-icon-btn:hover {
-  background: var(--emos-bg-subtle);
-  color: var(--emos-text);
-}
-
-.session-chat__msg-count {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  color: var(--emos-text-muted);
-  white-space: nowrap;
 }
 
 /* ── Conversation viewport ─────────────────────────────────────────────── */
 .session-chat__viewport {
   flex: 1;
   overflow-y: auto;
-  padding: 0.75rem 1rem 5.5rem;
+  padding: 1.5rem 1.5rem 0;
   display: flex;
   flex-direction: column;
 }
@@ -1087,14 +1017,10 @@
 
 /* ── Composer (spec sections 49-54) ──────────────────────────────────── */
 .session-chat__input-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--emos-surface);
   border-top: 1px solid var(--emos-border);
-  padding: 0.625rem 0.75rem 0.75rem;
-  z-index: 100;
+  background: var(--emos-surface);
+  padding: 0.75rem 1.5rem 0.875rem;
+  flex-shrink: 0;
 }
 
 .session-chat__composer {

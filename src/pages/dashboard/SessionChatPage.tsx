@@ -17,9 +17,9 @@ import { MessageContent } from '../../components/chat/MessageContent';
 import {
   ArrowLeft, Loader, Bookmark, BookmarkCheck, Copy, Check,
   ThumbsUp, ThumbsDown, ChevronDown, ChevronUp,
-  Share2, MoreHorizontal, X, Star, Edit3, Trash2,
-  Send, Clock, Tag, BookOpen, BarChart2, Compass,
-  Lightbulb, MessageSquare, AlertCircle, Plus,
+  Share2, X, Edit3, Trash2,
+  Send, Tag, BookOpen, BarChart2, Compass,
+  Lightbulb, AlertCircle, Plus,
 } from 'lucide-react';
 import './SessionChatPage.css';
 
@@ -729,14 +729,6 @@ export default function SessionChatPage() {
   if (isLoading) {
     return (
       <div className="session-chat">
-        <div className="session-chat__topbar">
-          <Link to={DASHBOARD_CHATS} className="session-chat__topbar-back" aria-label="Back">
-            <ArrowLeft size={18} />
-          </Link>
-          <div className="session-chat__topbar-info">
-            <div className="session-chat__topbar-title">Loading…</div>
-          </div>
-        </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Loader size={22} style={{ color: 'var(--emos-green-500)', animation: 'spin 1s linear infinite' }} />
         </div>
@@ -744,44 +736,20 @@ export default function SessionChatPage() {
     );
   }
 
-  const statusBadge = userMsgCount > 0
-    ? { label: 'Active', cls: 'session-chat__topbar-badge--active' }
-    : { label: 'New', cls: '' };
-
   return (
     <div className="session-chat">
 
-      {/* Topbar — spec section 3 */}
-      <div className="session-chat__topbar">
-        <Link to={DASHBOARD_CHATS} className="session-chat__topbar-back" aria-label="Back to sessions">
-          <ArrowLeft size={18} />
+      {/* Session context header — sits inside the scrolling viewport, not competing with DashboardShell TopBar */}
+      <div className="session-chat__context">
+        <Link to={DASHBOARD_CHATS} className="session-chat__back" aria-label="Back to sessions">
+          <ArrowLeft size={15} />
         </Link>
-        <div className="session-chat__topbar-info">
-          <div className="session-chat__topbar-title">
-            {session?.title ?? 'Chat session'}
-          </div>
-          <div className="session-chat__topbar-meta">
-            <span className="session-chat__topbar-date">
-              <Clock size={11} aria-hidden="true" />
-              {session?.created_at ? formatSessionMeta(session.created_at) : 'New session'}
-            </span>
-            {userMsgCount > 0 && (
-              <span className={`session-chat__topbar-badge ${statusBadge.cls}`}>
-                {statusBadge.label}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="session-chat__topbar-actions">
-          {userMsgCount > 0 && (
-            <span className="session-chat__msg-count">{userMsgCount} message{userMsgCount !== 1 ? 's' : ''}</span>
-          )}
-          <button className="session-chat__topbar-icon-btn" aria-label="Share session">
-            <Share2 size={16} strokeWidth={1.75} />
-          </button>
-          <button className="session-chat__topbar-icon-btn" aria-label="Session options">
-            <MoreHorizontal size={16} strokeWidth={1.75} />
-          </button>
+        <div className="session-chat__context-info">
+          <span className="session-chat__context-title">{session?.title ?? 'New chat'}</span>
+          <span className="session-chat__context-meta">
+            {session?.created_at ? formatSessionMeta(session.created_at) : ''}
+            {userMsgCount > 0 ? ` · ${userMsgCount} message${userMsgCount !== 1 ? 's' : ''}` : ''}
+          </span>
         </div>
       </div>
 
