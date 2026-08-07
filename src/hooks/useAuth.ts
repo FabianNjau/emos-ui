@@ -1,91 +1,74 @@
-import { useEffect, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+/**
+ * useAuth — thin wrapper around Supabase auth + profile lookup.
+ * Profile is_admin gates access to admin routes.
+ */
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { PublicUser } from '../types/api';
-import { PUBLIC_ROUTES } from '../constants/routes';
 
-/** Maps a Supabase session to a minimal user object. */
-function sessionUser(session: import('@supabase/supabase-js').Session | null): PublicUser | null {
-  if (!session?.user) return null;
-  return {
-    id: session.user.id,
-    email: session.user.email ?? '',
-    display_name: session.user.user_metadata?.display_name ?? null,
-    is_admin: false,
-  };
-}
+export interface AuthUser extends PublicUser {}
 
-/** Centralised auth hook. */
 export function useAuth() {
-  const navigate = useNavigate();
-  const [session, setSession] = useState<import('@supabase/supabase-js').Session | null>(null);
-  const [user, setUser] = useState<PublicUser | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Restore session on mount
-  useEffect(() => {
-    const init = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      setUser(sessionUser(data.session));
-    };
-    void init();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, ses) => {
-      setSession(ses);
-      setUser(sessionUser(ses));
-    });
-
-    return () => subscription.unsubscribe();
+  const fetchProfile = useCallback(async (authUserId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, email, display_name, is_admin')
+      .eq('id', authUserId)
+      .single();
+    return data;
   }, []);
 
+  useEffect(() => {
+    void (async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        const profile = await fetchProfile(authUser.id);
+        setUser({
+          id: authUser.id,
+          email: authUser.email ?? '',
+          display_name: profile?.display_name ?? authUser.email?.split('@')[0] ?? null,
+          is_admin: profile?.is_admin ?? false,
+        });
+      }
+      setLoading(false);
+    })();
+  }, [fetchProfile]);
+
+  const signIn = useCallback(async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    if (data.user) {
+      const profile = await fetchProfile(data.user.id);
+      setUser({
+        id: data.user.id,
+        email: data.user.email ?? '',
+        display_name: profile?.display_name ?? data.user.email?.split('@')[0] ?? null,
+        is_admin: profile?.is_admin ?? false,
+      });
+    }
+    return data;
+  }, [fetchProfile]);
+
   const signUp = useCallback(async (email: string, password: string, displayName?: string) => {
-    setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { display_name: displayName ?? null },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: { display_name: displayName ?? '' },
       },
     });
-    if (error) { setLoading(false); throw error; }
-    if (data.session) { setSession(data.session); setUser(sessionUser(data.session)); }
-    setLoading(false);
-    return data;
-  }, []);
-
-  const signIn = useCallback(async (email: string, password: string) => {
-    setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { setLoading(false); throw error; }
-    if (data.session) { setSession(data.session); setUser(sessionUser(data.session)); }
-    setLoading(false);
+    if (error) throw error;
     return data;
   }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-    setSession(null);
     setUser(null);
-    setTimeout(() => navigate(PUBLIC_ROUTES.HOME), 0);
-  }, [navigate]);
+  }, []);
 
-  const requireAuth = useCallback(() => {
-    if (!session) {
-      setTimeout(() => navigate(PUBLIC_ROUTES.LOGIN), 0);
-      return false;
-    }
-    return true;
-  }, [session, navigate]);
-
-  const requireAdmin = useCallback(() => {
-    if (!user?.is_admin) {
-      setTimeout(() => navigate(PUBLIC_ROUTES.HOME), 0);
-      return false;
-    }
-    return true;
-  }, [user, navigate]);
-
-  return { session, user, loading, signUp, signIn, signOut, requireAuth, requireAdmin };
+  return { user, loading, signIn, signUp, signOut };
 }

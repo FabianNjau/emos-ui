@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { PUBLIC_ROUTES, ADMIN_ROUTES } from './constants/routes';
+import { PUBLIC_ROUTES, ADMIN_ROUTES, DASHBOARD_ROUTES } from './constants/routes';
 
 // Layouts
 import AppShell from './components/layout/AppShell';
 import PublicShell from './components/layout/PublicShell';
+import DashboardShell from './components/layout/DashboardShell';
 
 // Admin pages
 import Dashboard from './pages/admin/Dashboard';
@@ -25,6 +26,12 @@ import AboutPage from './pages/public/AboutPage';
 import { AuthCallback } from './pages/public/auth/AuthCallback';
 import LoginPage from './pages/public/auth/LoginPage';
 import SignupPage from './pages/public/auth/SignupPage';
+
+// Dashboard pages
+import DashboardOverview from './pages/dashboard/DashboardOverview';
+import SessionsPage from './pages/dashboard/SessionsPage';
+import SavedPage from './pages/dashboard/SavedPage';
+import ProfilePage from './pages/dashboard/ProfilePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +60,14 @@ export default function App() {
             <Route path={PUBLIC_ROUTES.CALLBACK} element={<AuthCallback />} />
             <Route path={PUBLIC_ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={PUBLIC_ROUTES.SIGNUP} element={<SignupPage />} />
+          </Route>
+
+          {/* ── Dashboard routes — DashboardShell ──────────────────────────── */}
+          <Route element={<DashboardShell />}>
+            <Route path={DASHBOARD_ROUTES.HOME} element={<DashboardOverview />} />
+            <Route path={DASHBOARD_ROUTES.CHATS} element={<SessionsPage />} />
+            <Route path={DASHBOARD_ROUTES.SAVED} element={<SavedPage />} />
+            <Route path={DASHBOARD_ROUTES.PROFILES} element={<ProfilePage />} />
           </Route>
 
           {/* ── Admin routes — AppShell ───────────────────────────────────── */}

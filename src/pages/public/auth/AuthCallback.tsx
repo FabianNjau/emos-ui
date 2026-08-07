@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
-import { PUBLIC_ROUTES } from '../../../constants/routes';
+import { PUBLIC_ROUTES, DASHBOARD_ROUTES } from '../../../constants/routes';
 
 /** Handles Supabase auth redirect — exchanges code for session then redirects. */
 export function AuthCallback() {
@@ -11,10 +11,10 @@ export function AuthCallback() {
     // Exchange auth code from URL for a session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate(PUBLIC_ROUTES.HOME);
+        // Confirmed → send to user dashboard
+        navigate(DASHBOARD_ROUTES.HOME, { replace: true });
       } else {
-        // No session — redirect to login
-        navigate(PUBLIC_ROUTES.LOGIN);
+        navigate(PUBLIC_ROUTES.LOGIN, { replace: true });
       }
     });
   }, [navigate]);

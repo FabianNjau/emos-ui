@@ -113,6 +113,74 @@ export interface ChatResponse {
   };
 }
 
+// ── Dashboard types ───────────────────────────────────────────────────────────
+
+export interface ChatSession {
+  id: string;
+  user_id: string;
+  title: string | null;
+  context_snapshot: ContextSnapshot | null;
+  discussed_concepts: string[] | null;
+  turn_count: number;
+  created_at: string;
+  updated_at: string;
+  last_message?: string;
+}
+
+export interface ChatMessageRecord {
+  id: string;
+  session_id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  sources: ChatSource[] | null;
+  quality_score: number | null;
+  created_at: string;
+}
+
+export interface Bookmark {
+  id: string;
+  user_id: string;
+  concept_id: string;
+  concept_slug: string;
+  concept_name: string;
+  domain: string;
+  layer: string;
+  notes: string | null;
+  created_at: string;
+  evidence_count?: number;
+}
+
+export interface ContextProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  budget: string | null;
+  audience: string | null;
+  product_type: string | null;
+  location: string | null;
+  objective: string | null;
+  stage: string | null;
+  is_default: boolean;
+  created_at: string;
+}
+
+export type ContextSnapshot = {
+  budget?: string;
+  audience?: string;
+  product_type?: string;
+  location?: string;
+  objective?: string;
+  stage?: string;
+};
+
+export interface DashboardStats {
+  total_sessions: number;
+  total_bookmarks: number;
+  concepts_explored: number;
+  last_active: string | null;
+}
+
+
 // ── Auth types ─────────────────────────────────────────────────────────────────
 export interface PublicUser {
   id: string;
