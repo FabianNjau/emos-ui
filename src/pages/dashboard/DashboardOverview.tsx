@@ -1,6 +1,6 @@
 /**
- * DashboardOverview — authenticated home page.
- * Matches the EMOS design mockup.
+ * DashboardOverview — EMOS premium knowledge workspace home page.
+ * Matches EMOS design specification exactly.
  */
 import { Link } from 'react-router-dom';
 import { DASHBOARD_ROUTES, PUBLIC_ROUTES } from '../../constants/routes';
@@ -11,14 +11,15 @@ import { useAuth } from '../../hooks/useAuth';
 import {
   MessageSquare,
   Bookmark,
+  Compass,
   Clock,
   Loader,
   Trash2,
-  Compass,
   Sparkles,
   ChevronRight,
   BarChart3,
   BookmarkCheck,
+  MoreVertical,
 } from 'lucide-react';
 import './DashboardOverview.css';
 
@@ -42,63 +43,81 @@ export default function DashboardOverview() {
   const deleteSession = useDeleteSession();
 
   const displayName = user?.display_name ?? user?.email?.split('@')[0] ?? 'there';
-  const recentSessions = sessions.slice(0, 4);
+
+  const recentSessions = sessions.slice(0, 6);
+  const weeklySessions = sessions.filter(s => {
+    const age = Date.now() - new Date(s.created_at).getTime();
+    return age < 7 * 24 * 60 * 60 * 1000;
+  }).length;
 
   return (
     <div className="dash-overview">
 
-      {/* Greeting */}
-      <div className="dash-overview__greeting">
-        <h1>Welcome back, {displayName} 👋</h1>
-        <p>Your EMOS workspace — chat history, saved insights, and knowledge explorer.</p>
+      {/* ── Welcome header ─────────────────────────────────── */}
+      <div className="dash-overview__welcome">
+        <p className="dash-overview__welcome-label">Welcome back,</p>
+        <h1 className="dash-overview__welcome-name">{displayName}</h1>
+        <p className="dash-overview__welcome-sub">
+          Your EMOS workspace — chat history, saved insights, and knowledge explorer.
+        </p>
       </div>
 
-      {/* CTA Banner */}
-      <Link to={PUBLIC_ROUTES.ASK} className="dash-overview__cta">
-        <div className="dash-overview__cta-left">
-          <Sparkles size={18} />
-          <span>Start a new conversation</span>
+      {/* ── New conversation hero ────────────────────────────── */}
+      <Link to={PUBLIC_ROUTES.ASK} className="dash-overview__hero" aria-label="Start a new conversation">
+        <div className="dash-overview__hero-left">
+          {/* Circular icon container */}
+          <div className="dash-overview__hero-icon" aria-hidden="true">
+            <Sparkles size={24} />
+          </div>
+          <div className="dash-overview__hero-copy">
+            <p className="dash-overview__hero-title">Start a new conversation</p>
+            <p className="dash-overview__hero-body">
+              Ask anything. Get insights. Save knowledge.
+            </p>
+          </div>
         </div>
-        <span className="dash-overview__cta-btn">
-          New Conversation <ChevronRight size={13} />
-        </span>
+        <div className="dash-overview__hero-cta">
+          New Conversation
+          <ChevronRight size={16} strokeWidth={2.5} aria-hidden="true" />
+        </div>
       </Link>
 
-      {/* Stats */}
-      <div className="dash-overview__stats">
-        {/* Sessions */}
+      {/* ── Stats grid ──────────────────────────────────────── */}
+      <div className="dash-overview__stats-grid">
+        {/* Chat sessions */}
         <div className="dash-overview__stat-card">
-          <div
-            className="dash-overview__stat-icon"
-            style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}
-          >
-            <MessageSquare size={18} />
+          <div className="dash-overview__stat-icon-wrap" aria-hidden="true">
+            <div className="dash-overview__stat-icon" style={{ background: 'var(--emos-mint-100)', color: 'var(--emos-green-800)' }}>
+              <MessageSquare size={22} strokeWidth={1.75} />
+            </div>
           </div>
           <div className="dash-overview__stat-info">
             <div className="dash-overview__stat-num">
-              {sessionsLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : sessions.length}
+              {sessionsLoading
+                ? <Loader size={18} className="animate-spin" style={{ color: 'var(--emos-text-muted)' }} />
+                : sessions.length
+              }
             </div>
             <div className="dash-overview__stat-label">Chat sessions</div>
             {sessions.length > 0 && (
-              <div className="dash-overview__stat-sub">+{Math.min(sessions.length, sessions.filter(s => {
-                const age = Date.now() - new Date(s.created_at).getTime();
-                return age < 7 * 24 * 60 * 60 * 1000;
-              }).length)} this week</div>
+              <div className="dash-overview__stat-sub">+{weeklySessions} this week</div>
             )}
           </div>
         </div>
 
-        {/* Saved */}
+        {/* Saved concepts */}
         <div className="dash-overview__stat-card">
-          <div
-            className="dash-overview__stat-icon"
-            style={{ background: '#E8F2F0', color: '#3C7A6B' }}
-          >
-            <BookmarkCheck size={18} />
+          <div className="dash-overview__stat-icon-wrap" aria-hidden="true">
+            <div className="dash-overview__stat-icon" style={{ background: 'var(--emos-purple-100)', color: 'var(--emos-purple-500)' }}>
+              <BookmarkCheck size={22} strokeWidth={1.75} />
+            </div>
           </div>
           <div className="dash-overview__stat-info">
             <div className="dash-overview__stat-num">
-              {bookmarksLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : bookmarks.length}
+              {bookmarksLoading
+                ? <Loader size={18} className="animate-spin" style={{ color: 'var(--emos-text-muted)' }} />
+                : bookmarks.length
+              }
             </div>
             <div className="dash-overview__stat-label">Saved concepts</div>
             {bookmarks.length === 0 && (
@@ -107,17 +126,19 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        {/* Profiles */}
+        {/* Context profiles */}
         <div className="dash-overview__stat-card">
-          <div
-            className="dash-overview__stat-icon"
-            style={{ background: '#EEF0F8', color: '#4F5E8C' }}
-          >
-            <BarChart3 size={18} />
+          <div className="dash-overview__stat-icon-wrap" aria-hidden="true">
+            <div className="dash-overview__stat-icon" style={{ background: 'var(--emos-purple-100)', color: 'var(--emos-purple-500)' }}>
+              <BarChart3 size={22} strokeWidth={1.75} />
+            </div>
           </div>
           <div className="dash-overview__stat-info">
             <div className="dash-overview__stat-num">
-              {profilesLoading ? <Loader size={16} className="dash-overview__loading-icon" /> : profiles.length}
+              {profilesLoading
+                ? <Loader size={18} className="animate-spin" style={{ color: 'var(--emos-text-muted)' }} />
+                : profiles.length
+              }
             </div>
             <div className="dash-overview__stat-label">Context profiles</div>
             {profiles.length === 0 && (
@@ -127,95 +148,122 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* Recent Sessions */}
-      <div className="dash-overview__sessions">
-        <div className="dash-overview__section-header">
-          <span className="dash-overview__section-title">Recent sessions</span>
-          {sessions.length > 0 && (
-            <Link to={DASHBOARD_ROUTES.CHATS} className="dash-overview__section-link">
-              View all
-            </Link>
+      {/* ── Two-column lower grid ────────────────────────────── */}
+      <div className="dash-overview__lower-grid">
+
+        {/* Recent sessions */}
+        <div className="dash-overview__sessions-card">
+          <div className="dash-overview__card-header">
+            <h2 className="dash-overview__card-title">Recent sessions</h2>
+            {sessions.length > 0 && (
+              <Link to={DASHBOARD_ROUTES.CHATS} className="dash-overview__card-link">
+                View all
+              </Link>
+            )}
+          </div>
+
+          {sessionsLoading ? (
+            <div className="dash-overview__sessions-loading">
+              <Loader size={20} className="animate-spin" style={{ color: 'var(--emos-green-500)' }} />
+            </div>
+          ) : sessions.length === 0 ? (
+            <div className="dash-overview__empty-state">
+              <div className="dash-overview__empty-icon" aria-hidden="true">
+                <MessageSquare size={28} strokeWidth={1.5} />
+              </div>
+              <p className="dash-overview__empty-title">Your knowledge workspace is ready</p>
+              <p className="dash-overview__empty-body">
+                Start a conversation to build your knowledge base.
+              </p>
+              <Link to={PUBLIC_ROUTES.ASK} className="dash-overview__empty-cta">
+                Start a conversation
+                <ChevronRight size={14} />
+              </Link>
+            </div>
+          ) : (
+            <div className="dash-overview__sessions-list">
+              {recentSessions.map(session => (
+                <div key={session.id} className="dash-overview__session-row">
+                  <div className="dash-overview__session-icon" aria-hidden="true">
+                    <MessageSquare size={16} strokeWidth={1.75} />
+                  </div>
+                  <div className="dash-overview__session-info">
+                    <p className="dash-overview__session-title">
+                      {session.title ?? 'Untitled session'}
+                    </p>
+                    <p className="dash-overview__session-meta">
+                      <Clock size={10} aria-hidden="true" />
+                      {timeAgo(session.updated_at)}
+                      {session.turn_count > 0 && (
+                        <>
+                          <span className="dash-overview__session-dot" aria-hidden="true" />
+                          {session.turn_count} turns
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  <div className="dash-overview__session-actions">
+                    <Link
+                      to={`${DASHBOARD_ROUTES.CHATS}/${session.id}`}
+                      className="dash-overview__resume-btn"
+                    >
+                      Resume
+                    </Link>
+                    <button
+                      className="dash-overview__more-btn"
+                      onClick={() => deleteSession.mutate(session.id)}
+                      aria-label={`Delete session: ${session.title ?? 'Untitled session'}`}
+                      title="Delete session"
+                    >
+                      <Trash2 size={15} strokeWidth={1.75} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
-        {sessionsLoading ? (
-          <div className="dash-overview__loading">
-            <Loader size={20} className="dash-overview__loading-icon" />
+        {/* Quick access */}
+        <div className="dash-overview__quick-card">
+          <div className="dash-overview__card-header">
+            <h2 className="dash-overview__card-title">Quick access</h2>
           </div>
-        ) : sessions.length === 0 ? (
-          <div className="dash-overview__empty">
-            No sessions yet.{' '}
-            <Link to={PUBLIC_ROUTES.ASK}>Start your first chat</Link>
-          </div>
-        ) : (
-          <div className="dash-overview__sessions-list">
-            {recentSessions.map(session => (
-              <div key={session.id} className="dash-overview__session-card">
-                <div className="dash-overview__session-info">
-                  <MessageSquare size={14} className="dash-overview__session-icon" />
-                  <div className="dash-overview__session-text">
-                    <div className="dash-overview__session-title">
-                      {session.title ?? 'Untitled session'}
-                    </div>
-                    <div className="dash-overview__session-meta">
-                      <span className="dash-overview__session-time">
-                        <Clock size={10} />
-                        {timeAgo(session.updated_at)}
-                      </span>
-                      {session.turn_count > 0 && (
-                        <span className="dash-overview__session-turns">
-                          {session.turn_count} turns
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="dash-overview__session-actions">
-                  <Link
-                    to={`${DASHBOARD_ROUTES.CHATS}/${session.id}`}
-                    className="dash-overview__resume-btn"
-                  >
-                    Resume
-                  </Link>
-                  <button
-                    onClick={() => deleteSession.mutate(session.id)}
-                    className="dash-overview__delete-btn"
-                    title="Delete session"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          <div className="dash-overview__quick-list">
 
-      {/* Quick Access */}
-      <div className="dash-overview__quick-access">
-        <div className="dash-overview__section-header" style={{ marginBottom: '0.75rem' }}>
-          <span className="dash-overview__section-title">Quick access</span>
+            <Link to={DASHBOARD_ROUTES.SAVED} className="dash-overview__quick-tile">
+              <div
+                className="dash-overview__quick-tile-icon"
+                style={{ background: 'var(--emos-mint-100)', color: 'var(--emos-green-800)' }}
+                aria-hidden="true"
+              >
+                <Bookmark size={18} strokeWidth={1.75} />
+              </div>
+              <div className="dash-overview__quick-tile-text">
+                <p className="dash-overview__quick-tile-title">Saved Insights</p>
+                <p className="dash-overview__quick-tile-sub">View and manage your saved knowledge</p>
+              </div>
+              <ChevronRight size={14} className="dash-overview__quick-tile-arrow" aria-hidden="true" />
+            </Link>
+
+            <Link to={DASHBOARD_ROUTES.EXPLORE} className="dash-overview__quick-tile">
+              <div
+                className="dash-overview__quick-tile-icon"
+                style={{ background: 'var(--emos-purple-100)', color: 'var(--emos-purple-500)' }}
+                aria-hidden="true"
+              >
+                <Compass size={18} strokeWidth={1.75} />
+              </div>
+              <div className="dash-overview__quick-tile-text">
+                <p className="dash-overview__quick-tile-title">Knowledge Explorer</p>
+                <p className="dash-overview__quick-tile-sub">Discover, explore and learn from knowledge</p>
+              </div>
+              <ChevronRight size={14} className="dash-overview__quick-tile-arrow" aria-hidden="true" />
+            </Link>
+
+          </div>
         </div>
-        <div className="dash-overview__quick-grid">
-          <Link to={DASHBOARD_ROUTES.SAVED} className="dash-overview__quick-card">
-            <div
-              className="dash-overview__quick-card-icon"
-              style={{ background: '#E8F2F0', color: 'var(--accent)' }}
-            >
-              <Bookmark size={16} />
-            </div>
-            <span className="dash-overview__quick-card-label">Saved Insights</span>
-          </Link>
-          <Link to={DASHBOARD_ROUTES.EXPLORE} className="dash-overview__quick-card">
-            <div
-              className="dash-overview__quick-card-icon"
-              style={{ background: '#EEF0F8', color: '#4F5E8C' }}
-            >
-              <Compass size={16} />
-            </div>
-            <span className="dash-overview__quick-card-label">Knowledge Explorer</span>
-          </Link>
-        </div>
+
       </div>
     </div>
   );

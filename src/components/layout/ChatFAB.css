@@ -2,26 +2,27 @@
   position: fixed;
   bottom: 1.75rem;
   right: 1.75rem;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--emos-green-800);
   color: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(60, 122, 107, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 4px 20px rgba(13, 107, 89, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   z-index: 200;
 }
 
 .chat-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 24px rgba(60, 122, 107, 0.45);
+  transform: scale(1.06);
+  background: var(--emos-green-600);
+  box-shadow: 0 6px 28px rgba(13, 107, 89, 0.5);
 }
 
 .chat-fab:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }

@@ -1,6 +1,6 @@
 /**
- * DashboardShell — authenticated user layout.
- * Dark forest-green sidebar + topbar + floating chat FAB.
+ * DashboardShell — EMOS premium knowledge workspace layout.
+ * Dark forest sidebar (272px) + topbar + floating chat FAB.
  */
 import { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import {
   UserCog,
   LogOut,
   Loader,
+  Sparkles,
 } from 'lucide-react';
 import TopBar from './TopBar';
 import ChatFAB from './ChatFAB';
@@ -21,11 +22,11 @@ import ProCard from '../dashboard/ProCard';
 import './DashboardShell.css';
 
 const NAV_ITEMS = [
-  { to: DASHBOARD_ROUTES.HOME, label: 'Overview', icon: <LayoutDashboard size={16} />, exact: true },
-  { to: DASHBOARD_ROUTES.CHATS, label: 'My Sessions', icon: <MessageSquare size={16} /> },
-  { to: DASHBOARD_ROUTES.SAVED, label: 'Saved Insights', icon: <Bookmark size={16} /> },
-  { to: DASHBOARD_ROUTES.EXPLORE, label: 'Explore', icon: <Compass size={16} /> },
-  { to: DASHBOARD_ROUTES.PROFILES, label: 'Profiles', icon: <UserCog size={16} /> },
+  { to: DASHBOARD_ROUTES.HOME, label: 'Overview', icon: <LayoutDashboard size={20} strokeWidth={1.75} />, exact: true },
+  { to: DASHBOARD_ROUTES.CHATS, label: 'My Sessions', icon: <MessageSquare size={20} strokeWidth={1.75} /> },
+  { to: DASHBOARD_ROUTES.SAVED, label: 'Saved Insights', icon: <Bookmark size={20} strokeWidth={1.75} /> },
+  { to: DASHBOARD_ROUTES.EXPLORE, label: 'Explore', icon: <Compass size={20} strokeWidth={1.75} /> },
+  { to: DASHBOARD_ROUTES.PROFILES, label: 'Profiles', icon: <UserCog size={20} strokeWidth={1.75} /> },
 ];
 
 export default function DashboardShell() {
@@ -58,36 +59,40 @@ export default function DashboardShell() {
 
   return (
     <div className="dash-shell">
-      {/* ── Sidebar ─────────────────────────────────────────────── */}
+
+      {/* ── Sidebar ─────────────────────────────────────────── */}
       <aside className="dash-sidebar">
-        {/* Logo */}
-        <div className="dash-sidebar__logo">
-          <svg className="dash-sidebar__logo-mark" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            {/* Hexagonal EMOS mark */}
-            <path
-              d="M14 2L25 8V20L14 26L3 20V8L14 2Z"
-              fill="#1C3525"
-              stroke="#4ADE8B"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M14 6L22 10.5V19.5L14 24L6 19.5V10.5L14 6Z"
+
+        {/* Brand */}
+        <div className="dash-sidebar__brand">
+          {/* SVG logo — figure-8 knowledge loop mark */}
+            <svg
+              className="dash-sidebar__logo-mark"
+              viewBox="0 0 40 40"
               fill="none"
-              stroke="#4ADE8B"
-              strokeWidth="0.75"
-              strokeOpacity="0.4"
-            />
-            {/* Central dot */}
-            <circle cx="14" cy="14" r="3" fill="#4ADE8B" />
-          </svg>
-          <div className="dash-sidebar__logo-text">
-            <span className="dash-sidebar__logo-name">EMOS</span>
-            <span className="dash-sidebar__logo-sub">Knowledge Platform</span>
-          </div>
+              aria-hidden="true"
+            >
+              <path
+                d="M20 6 C13 6 7 11 7 16 C7 21 13 24 20 20 C27 16 33 19 33 24 C33 29 27 34 20 34"
+                stroke="#36A77D"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M20 6 C27 6 33 11 33 16 C33 21 27 24 20 20 C13 16 7 19 7 24 C7 29 13 34 20 34"
+                stroke="#95DEC4"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="dash-sidebar__brand-text">
+              <span className="dash-sidebar__brand-name">EMOS</span>
+              <span className="dash-sidebar__brand-sub">Knowledge Platform</span>
+            </div>
         </div>
 
         {/* Nav */}
-        <nav className="dash-sidebar__nav">
+        <nav className="dash-sidebar__nav" role="navigation" aria-label="Main navigation">
           {NAV_ITEMS.map(item => (
             <NavLink
               key={item.to}
@@ -103,37 +108,48 @@ export default function DashboardShell() {
           ))}
         </nav>
 
-        {/* Pro upgrade card */}
+        {/* Spacer */}
+        <div className="dash-sidebar__spacer" />
+
+        {/* Pro promotion card */}
         <ProCard />
 
-        {/* User + sign out */}
-        <div className="dash-sidebar__footer">
+        {/* User account section */}
+        <div className="dash-sidebar__account">
           <div className="dash-sidebar__user">
             <div className="dash-sidebar__avatar">{firstInitial}</div>
             <div className="dash-sidebar__user-info">
               <span className="dash-sidebar__user-name">{displayName}</span>
               <span className="dash-sidebar__user-plan">Free Plan</span>
             </div>
+            <svg className="dash-sidebar__chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
+
           <button
             className="dash-sidebar__signout"
             onClick={handleSignOut}
-            title="Sign out"
+            title="Sign out of EMOS"
           >
-            <LogOut size={14} />
+            <LogOut size={17} strokeWidth={1.75} />
+            <span>Sign out</span>
           </button>
         </div>
+
       </aside>
 
-      {/* ── Main ───────────────────────────────────────────────── */}
+      {/* ── Main content ───────────────────────────────────── */}
       <div className="dash-main">
         <TopBar userName={displayName} />
-        <div className="dash-main__content">
-          <Outlet />
+        <div className="dash-main__scroll">
+          <div className="dash-page">
+            <Outlet />
+          </div>
         </div>
       </div>
 
-      {/* ── Floating action button ───────────────────────────────── */}
+      {/* Floating chat FAB */}
       <ChatFAB />
     </div>
   );

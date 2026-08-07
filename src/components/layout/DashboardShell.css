@@ -1,177 +1,214 @@
 /* ── DashboardShell Layout ─────────────────────────────────────────────────── */
-
 .dash-shell {
   display: flex;
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--emos-bg);
 }
 
-/* ── Sidebar ────────────────────────────────────────────────────────────── */
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
 .dash-sidebar {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
-  display: flex;
-  flex-direction: column;
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
+  /* Subtle scroll shadow at top/bottom when content overflows */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
-/* ── Logo ───────────────────────────────────────────────────────────────── */
-.dash-sidebar__logo {
+/* ── Brand / Logo ─────────────────────────────────────────────────────────── */
+.dash-sidebar__brand {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 1.125rem 1rem 1rem;
+  gap: 0.75rem;
+  padding: 1.375rem 1rem;
   border-bottom: 1px solid var(--sidebar-border);
+  /* Reserve exact height for vertical rhythm */
+  height: 54px;
+  box-sizing: content-box;
 }
 
 .dash-sidebar__logo-mark {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
 }
 
-.dash-sidebar__logo-text {
+.dash-sidebar__brand-text {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.dash-sidebar__logo-name {
-  font-size: 0.875rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.08em;
-  line-height: 1.2;
+.dash-sidebar__brand-name {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--sidebar-text-active);
+  line-height: 1.15;
 }
 
-.dash-sidebar__logo-sub {
-  font-size: 0.625rem;
-  font-weight: 500;
+.dash-sidebar__brand-sub {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
   color: var(--sidebar-text-muted);
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
 }
 
-/* ── Nav ────────────────────────────────────────────────────────────────── */
+/* ── Navigation ────────────────────────────────────────────────────────────── */
 .dash-sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 0.75rem 0.5rem;
-  flex: 1;
+  gap: 4px;
+  padding: 1.5rem 0.5rem 1rem;
+  /* 32px gap before nav from spec */
 }
 
 .dash-sidebar__nav-item {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--sidebar-text-muted);
+  gap: 0.75rem;
+  height: 52px;
+  padding: 0 1rem;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 450;
+  color: var(--sidebar-text);
   text-decoration: none;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.15s ease, color 0.15s ease;
+  position: relative;
 }
 
 .dash-sidebar__nav-item:hover {
-  background: var(--sidebar-surface-hover);
-  color: var(--sidebar-text);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sidebar-text-active);
 }
 
 .dash-sidebar__nav-item--active {
-  background: var(--sidebar-surface);
+  background: var(--sidebar-accent);
   color: var(--sidebar-text-active);
   font-weight: 600;
 }
 
 .dash-sidebar__nav-item--active:hover {
-  background: var(--sidebar-surface-hover);
+  background: var(--sidebar-accent);
 }
 
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-.dash-sidebar__footer {
-  padding: 0.875rem 0.75rem;
+/* ── Spacer pushes Pro card and account down ──────────────────────────────── */
+.dash-sidebar__spacer {
+  flex: 1;
+  min-height: 1rem;
+}
+
+/* ── Account section ──────────────────────────────────────────────────────── */
+.dash-sidebar__account {
+  padding: 0.875rem 0.5rem;
   border-top: 1px solid var(--sidebar-border);
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .dash-sidebar__user {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  flex: 1;
-  min-width: 0;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  width: 100%;
+}
+
+.dash-sidebar__user:hover {
+  background: var(--sidebar-surface-hover);
 }
 
 .dash-sidebar__avatar {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   background: var(--sidebar-accent);
-  color: #ffffff;
+  color: var(--sidebar-text-active);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .dash-sidebar__user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  flex: 1;
   min-width: 0;
 }
 
 .dash-sidebar__user-name {
-  font-size: 0.8125rem;
+  display: block;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--sidebar-text);
+  color: var(--sidebar-text-active);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.3;
 }
 
 .dash-sidebar__user-plan {
-  font-size: 0.6875rem;
-  color: var(--sidebar-text-muted);
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #70C8A6;
+  line-height: 1.3;
 }
 
+.dash-sidebar__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--sidebar-text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Sign out ─────────────────────────────────────────────────────────────── */
 .dash-sidebar__signout {
-  width: 28px;
-  height: 28px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.625rem;
+  height: 44px;
+  padding: 0 0.75rem;
   background: none;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--sidebar-text-muted);
-  transition: color 0.12s ease, background 0.12s ease;
-  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  font-weight: 450;
+  width: 100%;
+  transition: background 0.15s ease, color 0.15s ease;
+  text-align: left;
 }
 
 .dash-sidebar__signout:hover {
-  color: #ff7b7b;
-  background: rgba(255, 123, 123, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--sidebar-text-active);
 }
 
-/* ── Main ─────────────────────────────────────────────────────────────── */
+/* ── Main ────────────────────────────────────────────────────────────────── */
 .dash-main {
   margin-left: var(--sidebar-width);
   flex: 1;
@@ -181,44 +218,55 @@
   min-width: 0;
 }
 
-.dash-main__content {
+.dash-main__scroll {
   flex: 1;
-  padding: 1.75rem 2rem;
-  max-width: 1200px;
-  width: 100%;
+  overflow-y: auto;
 }
 
-/* ── Loading ────────────────────────────────────────────────────────────── */
+/* Page content — max-width 1240px, centered */
+.dash-page {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: calc(var(--topbar-height) + 2rem) 2rem 3rem;
+}
+
+/* ── Loading ─────────────────────────────────────────────────────────────── */
 .dash-shell-loading {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
+  background: var(--emos-bg);
 }
 
 .dash-shell-loading__icon {
-  color: var(--accent);
-  animation: dash-shell-spin 0.9s linear infinite;
+  color: var(--emos-green-500);
+  animation: spin 0.9s linear infinite;
 }
 
-@keyframes dash-shell-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .dash-sidebar {
+    width: 240px;
+    min-width: 240px;
+  }
+  .dash-main {
+    margin-left: 240px;
+  }
+  .dash-page {
+    padding: calc(var(--topbar-height) + 1.5rem) 1.5rem 2.5rem;
+  }
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .dash-sidebar {
     transform: translateX(-100%);
     transition: transform 0.25s ease;
   }
-
   .dash-main {
     margin-left: 0;
   }
-
-  .dash-main__content {
-    padding: 1.25rem 1rem;
+  .dash-page {
+    padding: calc(var(--topbar-height) + 1rem) 1rem 2rem;
   }
 }
