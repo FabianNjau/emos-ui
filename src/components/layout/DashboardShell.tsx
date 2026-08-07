@@ -3,7 +3,7 @@
  * Dark forest sidebar (272px) + topbar + floating chat FAB.
  */
 import { useEffect } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { DASHBOARD_ROUTES } from '../../constants/routes';
 import { useAuth } from '../../hooks/useAuth';
 import {
@@ -32,6 +32,9 @@ const NAV_ITEMS = [
 export default function DashboardShell() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isUpgradePage = location.pathname === DASHBOARD_ROUTES.UPGRADE;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -98,8 +101,10 @@ export default function DashboardShell() {
         {/* Spacer */}
         <div className="dash-sidebar__spacer" />
 
-        {/* Pro promotion card */}
-        <ProCard />
+        {/* Pro promotion card — hidden on the upgrade page itself */}
+        {!isUpgradePage && (
+          <ProCard onUpgrade={() => navigate(DASHBOARD_ROUTES.UPGRADE)} />
+        )}
 
         {/* User account section */}
         <div className="dash-sidebar__account">

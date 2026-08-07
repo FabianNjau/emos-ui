@@ -6,7 +6,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { PublicUser } from '../types/api';
 
-export interface AuthUser extends PublicUser {}
+export interface AuthUser extends PublicUser {
+  plan?: 'free' | 'pro';
+}
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
