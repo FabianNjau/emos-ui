@@ -15,9 +15,11 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async (authUserId: string) => {
+    // profiles table has: id, display_name, bio, is_admin, created_at, updated_at
+    // (no email column — email comes from auth.users)
     const { data } = await supabase
       .from('profiles')
-      .select('id, email, display_name, is_admin')
+      .select('id, display_name, is_admin')
       .eq('id', authUserId)
       .single();
     return data;
