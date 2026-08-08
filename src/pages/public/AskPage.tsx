@@ -2,22 +2,156 @@
  * AskPage — public chat page. Creates/resumes a session, persists to Supabase.
  * Context profile from sessionStorage ('emos_context_profile') is read on mount
  * and sent with the first message to seed the EMOS engine.
+ *
+ * Server response shape (ChatResponse) is identical to admin chat:
+ *   response, thinking, sources (with concept_slug), scores, priority_guide,
+ *   memory, diagnosis, concepts, evidence — all from the same /api/chat endpoint.
+ * AskPage displays the structured response via ResponseRenderer + quality bar.
+ * Admin chat (ChatPage.tsx) uses the same ResponseRenderer with additional
+ * memory/evidence panels. Both consume the same server shape.
  */
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppendMessage } from '../../hooks/useSessionChat';
+import { ResponseRenderer } from '../../components/chat/ResponseRenderer';
 import type { ChatMessage, ContextProfile } from '../../types/api';
 import { PUBLIC_ROUTES, DASHBOARD_ROUTES } from '../../constants/routes';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import './AskPage.css';
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface ChatSource {
+  concept_slug?: string;
+  name: string;
+  finding: string;
+  url?: string;
+}
+
+interface QualityScores {
+  knowledge: number;
+  reasoning: number;
+  context_match: number;
+  practical_utility: number;
+  communication: number;
+  overall: number;
+  flags: string[];
+  missing: string[];
+}
+
+interface EnrichedMessage extends ChatMessage {
+  thinking?: string;
+  sources?: ChatSource[];
+  scores?: QualityScores;
+  priority_guide?: {
+    priority_concepts: { slug: string; reason: string; score: number }[];
+    concepts_to_defer: { slug: string; reason: string }[];
+    context_gaps: string[];
+    stage: string;
+    layer_priority: string[];
+  };
+}
+
+// ── Thinking Block ─────────────────────────────────────────────────────────────
+
+function ThinkingBlock({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const lines = text.split('\n').filter(Boolean);
+
+  if (!text) return null;
+
+  return (
+    <div className="ask-thinking-block">
+      <button
+        className="ask-thinking-toggle"
+        onClick={() => setExpanded(v => !v)}
+      >
+        {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+        💭 Reasoning Steps ({lines.length})
+      </button>
+      {expanded && (
+        <div className="ask-thinking-body">
+          {lines.map((line, i) => (
+            <div key={i} className="ask-thinking-line">{line.trim()}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Quality Bar ────────────────────────────────────────────────────────────────
+
+function QualityBar({ scores }: { scores: QualityScores }) {
+  const color = (v: number) =>
+    v >= 75 ? '#27ae60' : v >= 60 ? '#e67e22' : '#c0392b';
+
+  const rows: [keyof QualityScores, string][] = [
+    ['knowledge', 'Knowledge'],
+    ['reasoning', 'Reasoning'],
+    ['context_match', 'Context'],
+    ['practical_utility', 'Utility'],
+    ['communication', 'Communication'],
+  ];
+
+  return (
+    <div className="ask-quality">
+      <div className="ask-quality__header">📊 Quality Audit</div>
+      <div className="ask-quality__bars">
+        {rows.map(([key, label]) => {
+          const val = scores[key] as number;
+          return (
+            <div key={key} className="ask-quality__row">
+              <span className="ask-quality__label">{label}</span>
+              <div className="ask-quality__track">
+                <div
+                  className="ask-quality__fill"
+                  style={{ width: `${Math.min(100, val)}%`, background: color(val) }}
+                />
+              </div>
+              <span className="ask-quality__val" style={{ color: color(val) }}>{val}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="ask-quality__overall">
+        <span>Overall</span>
+        <span style={{ color: color(scores.overall), fontWeight: 800 }}>
+          {scores.overall}/100
+        </span>
+      </div>
+      {scores.flags && scores.flags.length > 0 && (
+        <div className="ask-quality__flags">
+          {scores.flags.map((f, i) => <span key={i}>⚠️ {f}</span>)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Source Badge ────────────────────────────────────────────────────────────────
+
+function SourceBadge({ source }: { source: ChatSource }) {
+  return (
+    <div className="ask-source-badge">
+      <span className="ask-source-badge__slug">
+        {source.concept_slug ?? source.name}
+      </span>
+      <span className="ask-source-badge__finding">{source.finding}</span>
+    </div>
+  );
+}
+
+// ── AskPage ────────────────────────────────────────────────────────────────────
 
 export default function AskPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<EnrichedMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -76,7 +210,7 @@ export default function AskPage() {
     const text = input.trim();
     if (!text || loading) return;
 
-    const userMsg: ChatMessage = { role: 'user', content: text };
+    const userMsg: EnrichedMessage = { role: 'user', content: text };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
@@ -112,7 +246,7 @@ export default function AskPage() {
           }
         : undefined;
 
-      const res = await fetch(`${import.meta.env.VITE_API_BASE ?? '/api'}/chat`, {
+      const res = await fetch(`/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -124,23 +258,26 @@ export default function AskPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message ?? 'Request failed');
 
-      const assistantMsg: ChatMessage = {
+      // Full ChatResponse from server — same shape as admin chat
+      const assistantMsg: EnrichedMessage = {
         role: 'assistant',
         content: data.response ?? '',
-        thinking: data.thinking,
-        sources: data.sources,
+        thinking: data.thinking ?? '',
+        sources: data.sources ?? [],
+        scores: data.scores ?? undefined,
+        priority_guide: data.priority_guide ?? undefined,
       };
 
       setMessages(prev => [...prev, assistantMsg]);
 
-      // Persist assistant message
+      // Persist assistant message to Supabase
       if (sid) {
         await appendMessage.mutateAsync({ sessionId: sid, message: assistantMsg });
 
         // Track discussed concepts from sources
         if (data.sources?.length > 0) {
           const slugs = data.sources
-            .map((s: { concept_slug?: string }) => s.concept_slug)
+            .map((s: ChatSource) => s.concept_slug)
             .filter(Boolean) as string[];
           if (slugs.length > 0) {
             void supabase.from('chat_sessions').update({
@@ -161,7 +298,6 @@ export default function AskPage() {
   };
 
   const handleNewChat = () => {
-    // Clear session so next message creates a fresh session
     if (sessionId) {
       void supabase.from('chat_sessions').update({
         title: messages[0]?.content?.slice(0, 80) ?? null,
@@ -267,16 +403,32 @@ export default function AskPage() {
             <div key={i} className={`chat-msg chat-msg--${msg.role}`}>
               <div className="chat-msg__role">{msg.role === 'user' ? 'You' : 'EMOS'}</div>
               <div className="chat-msg__content">
-                {msg.content.split('\n').map((line, j) => (
-                  <p key={j}>{line}</p>
-                ))}
-                {msg.sources && msg.sources.length > 0 && (
-                  <div className="chat-msg__sources">
-                    <p className="chat-msg__sources-label">Sources:</p>
+                {/* Thinking block — collapsed by default */}
+                {msg.role === 'assistant' && msg.thinking && (
+                  <ThinkingBlock text={msg.thinking} />
+                )}
+
+                {/* Structured response — same ResponseRenderer as admin chat */}
+                {msg.role === 'assistant'
+                  ? <ResponseRenderer content={msg.content} />
+                  : msg.content.split('\n').map((line, j) => (
+                      <p key={j}>{line}</p>
+                    ))
+                }
+
+                {/* Quality audit bar */}
+                {msg.role === 'assistant' && msg.scores && msg.scores.overall > 0 && (
+                  <QualityBar scores={msg.scores} />
+                )}
+
+                {/* Sources with concept_slug */}
+                {msg.role === 'assistant' && msg.sources && msg.sources.length > 0 && (
+                  <div className="ask-sources">
+                    <div className="ask-sources__label">
+                      📚 Evidence ({msg.sources.length})
+                    </div>
                     {msg.sources.map((s, k) => (
-                      <p key={k} className="chat-msg__source-item">
-                        <strong>{s.name}:</strong> {s.finding}
-                      </p>
+                      <SourceBadge key={k} source={s} />
                     ))}
                   </div>
                 )}
